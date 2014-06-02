@@ -7,7 +7,7 @@ namespace ExactTarget.TriggeredEmail.TestConsole
     {
         public static void Main()
         {
-            //The triggered send external key (custtomer key) and recipient that the email will go to
+            //The triggered send external key (customer key) and recipient that the email will go to
             var triggeredEmail = new ExactTargetTriggeredEmail("external-key-of-trigger", "recipient@uri.test" );
             
             //if the email is attached to a data extension, add the values here (optional
