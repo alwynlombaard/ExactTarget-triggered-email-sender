@@ -45,7 +45,6 @@ namespace ExactTarget.TriggeredEmail.TestConsole
                 ApiUserName = "API_User",
                 ApiPassword = "API_Password",
                 EndPoint = "https://webservice.s6.exacttarget.com/Service.asmx",//update your correct endpoint
-                SoapBinding = "ExactTarget.Soap",
                 ClientId = 100, // optional  business unit to use
             };
         }

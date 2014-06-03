@@ -24,7 +24,7 @@ namespace ExactTarget.TriggeredEmail
         public void Trigger(ExactTargetTriggeredEmail exactTargetTriggeredEmail, RequestQueueing requestQueueing = RequestQueueing.No)
         {
             var clientId = _config.ClientId;
-            var client = new SoapClient(_config.SoapBinding, _config.EndPoint);
+            var client = new SoapClient(_config.SoapBinding ?? "ExactTarget.Soap", _config.EndPoint);
             if (client.ClientCredentials != null)
             {
                 client.ClientCredentials.UserName.UserName = _config.ApiUserName;
