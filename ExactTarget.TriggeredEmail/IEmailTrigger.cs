@@ -2,6 +2,6 @@
 {
     public interface IEmailTrigger
     {
-        void Trigger(ExactTargetTriggeredEmail exactTargetTriggeredEmail, RequestQueueing requestQueueing);
+        void Trigger(ExactTargetTriggeredEmail exactTargetTriggeredEmail, RequestQueueing requestQueueing, Priority priority);
     }
 }

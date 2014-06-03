@@ -12,6 +12,12 @@ namespace ExactTarget.TriggeredEmail
         Yes,
     }
 
+    public enum Priority
+    {
+        Normal = 0,
+        High
+    }
+
     public class EmailTrigger : IEmailTrigger
     {
         private readonly IExactTargetConfiguration _config;
@@ -21,7 +27,7 @@ namespace ExactTarget.TriggeredEmail
             _config = config;
         }
 
-        public void Trigger(ExactTargetTriggeredEmail exactTargetTriggeredEmail, RequestQueueing requestQueueing = RequestQueueing.No)
+        public void Trigger(ExactTargetTriggeredEmail exactTargetTriggeredEmail, RequestQueueing requestQueueing = RequestQueueing.No, Priority priority = Priority.Normal)
         {
             var clientId = _config.ClientId;
             var client = new SoapClient(_config.SoapBinding ?? "ExactTarget.Soap", _config.EndPoint);
@@ -63,7 +69,7 @@ namespace ExactTarget.TriggeredEmail
             {
                 RequestType = requestQueueing == RequestQueueing.No ? RequestType.Synchronous : RequestType.Asynchronous,
                 RequestTypeSpecified = true,
-                QueuePriority = Priority.High,
+                QueuePriority = priority == Priority.High ? ExactTargetApi.Priority.High : ExactTargetApi.Priority.Medium,
                 QueuePrioritySpecified = true
             };
 
@@ -76,11 +82,11 @@ namespace ExactTarget.TriggeredEmail
             CheckResult(result.FirstOrDefault()); //we expect only one result because we've sent only one APIObject
         }
 
-        private void CheckResult(Result result)
+        private static void CheckResult(Result result)
         {
             if (result == null)
             {
-                throw new Exception("Recieved an unexpected null result from ExactTarget");
+                throw new Exception("Received an unexpected null result from ExactTarget");
             }
 
             if (result != null 

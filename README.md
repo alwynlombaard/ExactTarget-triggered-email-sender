@@ -1,7 +1,12 @@
 ExactTarget triggered email sender
 ==================================
 
-Sends a triggered email via ExactTarget.
+This library simplifies the sending of ExactTarget "Triggered sends". 
+
+Intended users require access to ExactTarget with a "Triggered Send" configured
+and running with an "External Key". 
+
+It also handles "Triggered Sends" with "Data Extensions"
 
 How to use
 ----------
@@ -10,22 +15,6 @@ How to use
 Get it from Nuget:
 ```
 PM> Install-Package ExactTarget.TriggerEmailSender
-```
-
-Specify external key (customer key) of the "triggered send" 
-and recipient that the email will go to
- 
-```C#
- var triggeredEmail = new ExactTargetTriggeredEmail("external-key-of-trigger", 
-                                "recipient@uri.test" );
-
-```
-
-Specify values for the Data Extension if any (optional)
-
-```C#
-triggeredEmail.AddReplacementValue("DataExtensionFieldName1", "Value 1");
-triggeredEmail.AddReplacementValue("DataExtensionFieldName2", "Value 2");
 ```
 
 Create a trigger with configuration values
@@ -41,6 +30,23 @@ Create a trigger with configuration values
             });
 //above code is only for demonstration purposes
 //ideally you would want to load your configuration from a configuration file		
+```
+
+
+Specify external key (customer key) of the "triggered send" 
+and recipient that the email will go to
+ 
+```C#
+ var triggeredEmail = new ExactTargetTriggeredEmail("external-key-of-trigger", 
+                                "recipient@uri.test" );
+
+```
+
+Specify values for the Data Extension if any (optional)
+
+```C#
+triggeredEmail.AddReplacementValue("DataExtensionFieldName1", "Value 1");
+triggeredEmail.AddReplacementValue("DataExtensionFieldName2", "Value 2");
 ```
 
 Trigger the email
