@@ -7,8 +7,15 @@ namespace ExactTarget.TriggeredEmail.TestConsole
     {
         public static void Main()
         {
+            const string externalKey = "my-test-external-key";
             var creator = new TriggeredEmailCreator(GetConfig());
-            var id = creator.RetrieveTriggeredSendDataExtensionTemplateId();
+            //var id = creator.RetrieveTriggeredSendDataExtensionTemplateId();
+
+            //Console.Write(creator.DoesTriggeredSendExist("8A41E6A0200019F7"));
+            creator.Create(externalKey, new List<string>());
+
+
+
             
             Console.ReadKey();
             return;
@@ -50,7 +57,7 @@ namespace ExactTarget.TriggeredEmail.TestConsole
                 ApiUserName = "",
                 ApiPassword = "",
                 EndPoint = "https://webservice.s6.exacttarget.com/Service.asmx",//update your correct endpoint
-                ClientId = 6269489, // optional  business unit to use
+                ClientId = 6269490, // optional  business unit to use
             };
         }
     }
