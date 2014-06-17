@@ -7,6 +7,11 @@ namespace ExactTarget.TriggeredEmail.TestConsole
     {
         public static void Main()
         {
+            var creator = new TriggeredEmailCreator(GetConfig());
+            var id = creator.RetrieveTriggeredSendDataExtensionTemplateId();
+            
+            Console.ReadKey();
+            return;
             //The triggered send external key (customer key) and recipient that the email will go to
             var triggeredEmail = new ExactTargetTriggeredEmail("external-key-of-trigger", "recipient@uri.test" );
             
@@ -42,10 +47,10 @@ namespace ExactTarget.TriggeredEmail.TestConsole
             //load this from a config file
             return new ExactTargetConfiguration
             {
-                ApiUserName = "API_User",
-                ApiPassword = "API_Password",
+                ApiUserName = "",
+                ApiPassword = "",
                 EndPoint = "https://webservice.s6.exacttarget.com/Service.asmx",//update your correct endpoint
-                ClientId = 100, // optional  business unit to use
+                ClientId = 6269489, // optional  business unit to use
             };
         }
     }
