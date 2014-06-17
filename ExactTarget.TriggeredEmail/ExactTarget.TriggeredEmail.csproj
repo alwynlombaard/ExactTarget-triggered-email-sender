@@ -46,12 +46,14 @@
     <Compile Include="IEmailTrigger.cs" />
     <Compile Include="IExactTargetConfiguration.cs" />
     <Compile Include="ExactTargetTriggeredEmail.cs" />
+    <Compile Include="ITriggeredEmailCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\ExactTargetApi\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="TriggeredEmailCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
