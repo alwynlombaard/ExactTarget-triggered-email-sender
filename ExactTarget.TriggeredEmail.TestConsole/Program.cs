@@ -7,39 +7,21 @@ namespace ExactTarget.TriggeredEmail.TestConsole
     {
         public static void Main()
         {
-            const string externalKey = "my-test-external-key";
-            var creator = new TriggeredEmailCreator(GetConfig());
-            //var id = creator.RetrieveTriggeredSendDataExtensionTemplateId();
-
-            //Console.Write(creator.DoesEmailTemplateExist("template-test-key"));
-            //creator.Create(externalKey, new List<string>());
-            //creator.CreateEmailTemplate(GetConfig().ClientId, "template-test-key", "template-test-key", 
-                //"<custom type =\"content\" name=\"dyanmicArea\"><custom name=\"opencounter\" type=\"tracking\">");
-
-
-            
-            Console.ReadKey();
-            return;
-            //The triggered send external key (customer key) and recipient that the email will go to
-            var triggeredEmail = new ExactTargetTriggeredEmail("external-key-of-trigger", "recipient@uri.test" );
-            
-            //if the email is attached to a data extension, add the values here (optional
-            triggeredEmail.AddReplacementValues(new Dictionary<string, string>
-                {
-                    {"DataExtensionFieldName1","Value 1"}, 
-                    {"DataExtensionFieldName2","Value 2"}
-                });
-
-            //get the config
-            var config = GetConfig();
-
-            //create trigger with config
-            var emailTrigger = new EmailTrigger(config);
-
-            
-            //trigger the email
+            const string externalKey = "my-test-external-key-2";
             try
             {
+                var creator = new TriggeredEmailCreator(GetConfig());
+                creator.Create(externalKey);
+                creator.StartTriggeredSend(externalKey);
+
+                var triggeredEmail = new ExactTargetTriggeredEmail(externalKey, "someone@temp.uri");
+                triggeredEmail.AddReplacementValues(new Dictionary<string, string>
+                {
+                    {"Subject","Test email"}, 
+                    {"Body","<h2>Test email heading</h2><p>Test paragraph</p>"}
+                });
+                
+                var emailTrigger = new EmailTrigger(GetConfig());
                 emailTrigger.Trigger(triggeredEmail);
                 Console.WriteLine("Triggered external key {0} to {1} successfully", triggeredEmail.ExternalKey, triggeredEmail.EmailAddress);
             }

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using ExactTarget.EmailFromTemplateCreator;
 using ExactTarget.TriggeredEmail.ExactTargetApi;
+using Result = ExactTarget.TriggeredEmail.ExactTargetApi.Result;
 
 namespace ExactTarget.TriggeredEmail
 {
@@ -19,9 +23,9 @@ namespace ExactTarget.TriggeredEmail
             _client.ClientCredentials.UserName.Password = _config.ApiPassword;
         }
 
-        public void Create(string externalKey, IEnumerable<string> dataExtensionFieldNames = null)
+        public int Create(string externalKey)
         {
-            dataExtensionFieldNames = dataExtensionFieldNames ?? new List<string>();
+            var dataExtensionFieldNames = new HashSet<string>{"Subject", "Body"};
             if (externalKey.Length > Guid.Empty.ToString().Length)
             {
                 throw new ArgumentException("externalKey too long, should be max length of " + Guid.Empty.ToString().Length, "externalKey");
@@ -32,51 +36,84 @@ namespace ExactTarget.TriggeredEmail
                 throw new Exception(string.Format("A TriggeredSendDefinition with external key {0} already exsits", externalKey));
             }
 
-            
-            //create data extension if needed
-            var dataExtensionExternalKey = externalKey.ToLower().Reverse().ToString();
+            var dataExtensionExternalKey = GenerateExternalKey("data-extension-" + externalKey);
             if (!DoesDataExtensionExist(dataExtensionExternalKey))
             {
                 var dataExtensionTemplateId = RetrieveTriggeredSendDataExtensionTemplateId();
                 CreateDataExtension(_config.ClientId, 
                                     dataExtensionTemplateId, 
                                     dataExtensionExternalKey, 
-                                    "TriggeredSend -" + externalKey, 
+                                    "triggeredsend-" + externalKey, 
                                     dataExtensionFieldNames);
                 
             }
 
-            //create email template if needed
-            var 
+            var emailTempalteExternalKey = GenerateExternalKey("email-template" + externalKey);
+            var emailTemplateId = RetrieveEmailTemplateId(emailTempalteExternalKey);
 
-            //create email from template if needed
+            if (emailTemplateId == 0)
+            {
+                emailTemplateId = CreateEmailTemplate(_config.ClientId,
+                    emailTempalteExternalKey,
+                    "template-" + externalKey,
+                    "<custom type=\"content\" name=\"dynamicArea\"><custom name=\"opencounter\" type=\"tracking\">");
+            }
 
-
-            //create triggeredSendDefinition
-
-            throw new System.NotImplementedException();
+            var emailName = "email-" + externalKey;
+            var emailId = CreateEmailFromTemplate(emailTemplateId,
+                    emailName,
+                    "%%Subject%%",
+                    new KeyValuePair<string, string>("dynamicArea", "%%Body%%"));
+            
+            return CreateTriggeredSendDefinition(_config.ClientId,
+                externalKey,
+                emailId,
+                dataExtensionExternalKey,
+                externalKey,
+                externalKey);
         }
 
-        public bool DoesTriggeredSendDefinitionExist(string externalKey)
+        public void StartTriggeredSend(string externalKey)
+        {
+            var ts = new TriggeredSendDefinition
+            {
+                Client = _config.ClientId.HasValue ? new ClientID { ID = _config.ClientId.Value, IDSpecified = true } : null,
+                CustomerKey = externalKey,
+                TriggeredSendStatus = TriggeredSendStatusEnum.Active,
+                TriggeredSendStatusSpecified = true
+            };
+           
+            string requestId, overallStatus;
+            var result = _client.Update(new UpdateOptions(), new APIObject[] { ts }, out requestId, out overallStatus);
+            CheckResult(result.FirstOrDefault());
+        }
+
+        private string GenerateExternalKey(string value)
+        {
+            var md5 = MD5.Create();
+            var bytes = md5.ComputeHash(Encoding.UTF8.GetBytes(value));
+            return new Guid(bytes).ToString();
+        }
+
+        private bool DoesTriggeredSendDefinitionExist(string externalKey)
         {
             return DoesObjectExist(externalKey, "TriggeredSendDefinition");
         }
 
-        public bool DoesDataExtensionExist(string externalKey)
+        private bool DoesDataExtensionExist(string externalKey)
         {
             return DoesObjectExist(externalKey, "DataExtension");
         }
 
-        public bool DoesEmailTemplateExist(string externalKey)
+        private int RetrieveEmailTemplateId(string externalKey)
         {
-
             var request = new RetrieveRequest
             {
                 ClientIDs = _config.ClientId.HasValue
                     ? new[] { new ClientID { ID = _config.ClientId.Value, IDSpecified = true } }
                     : null,
                 ObjectType = "Template",
-                Properties = new[] { "TemplateName", "ObjectID", "CustomerKey" },
+                Properties = new[] {"ID", "TemplateName", "ObjectID", "CustomerKey" },
                 Filter = new SimpleFilterPart
                 {
                     Property = "CustomerKey",
@@ -87,11 +124,9 @@ namespace ExactTarget.TriggeredEmail
 
             string requestId;
             APIObject[] results;
-
             _client.Retrieve(request, out requestId, out results);
 
-            return results != null && results.Any();
-           
+            return results != null && results.Any() ? results.First().ID : 0;
         }
 
         private bool DoesObjectExist(string externalKey, string objectType)
@@ -175,7 +210,7 @@ namespace ExactTarget.TriggeredEmail
             CheckResult(result.FirstOrDefault()); //we expect only one result because we've sent only one APIObject
         }
 
-        public void CreateEmailTemplate(int? clientId,
+        private int CreateEmailTemplate(int? clientId,
             string externalKey,
             string name,
             string html)
@@ -192,6 +227,41 @@ namespace ExactTarget.TriggeredEmail
             var result = _client.Create(new CreateOptions(), new APIObject[] { template }, out requestId, out status);
 
             CheckResult(result.FirstOrDefault()); //we expect only one result because we've sent only one APIObject
+
+            return result.First().NewID;
+        }
+
+        private int CreateTriggeredSendDefinition(int? clientId,
+                                                    string externalId,
+                                                    int emailId, 
+                                                    string dataExtensionCustomerKey,
+                                                    string name, 
+                                                    string description)
+        {
+            var ts = new TriggeredSendDefinition
+            {
+                Client = clientId.HasValue ? new ClientID { ID = clientId.Value, IDSpecified = true } : null,
+                Email = new Email { ID = emailId, IDSpecified = true },
+                SendSourceDataExtension = new DataExtension { CustomerKey = dataExtensionCustomerKey },
+                Name = name,
+                Description = description,
+                CustomerKey = externalId,
+                TriggeredSendStatus = TriggeredSendStatusEnum.Active,
+                SendClassification = new SendClassification
+                {
+                    CustomerKey = "Default Transactional"
+                },
+                IsMultipart = true,
+                IsMultipartSpecified = true,
+
+            };
+            string requestId, status;
+            var result = _client.Create(new CreateOptions(), new APIObject[] { ts }, out requestId, out status);
+
+            CheckResult(result.FirstOrDefault());
+
+            return result.First().NewID;
+
         }
         
         
@@ -209,6 +279,19 @@ namespace ExactTarget.TriggeredEmail
                                         result.StatusCode,
                                         result.StatusMessage));
             }
+        }
+
+        private int CreateEmailFromTemplate(int emailTemplateId, string emailName, string subject, KeyValuePair<string, string> contentArea )
+        {
+            var emailCreator = new EmailCreator(new EmailFromTemplateCreator.ExactTargetConfiguration
+            {
+                ApiUserName = _config.ApiUserName,
+                ApiPassword = _config.ApiPassword,
+                ClientId = _config.ClientId,
+                EndPoint = _config.EndPoint,
+                SoapBinding = _config.SoapBinding
+            });
+            return emailCreator.Create(emailTemplateId, emailName, subject, contentArea);
         }
     }
 }

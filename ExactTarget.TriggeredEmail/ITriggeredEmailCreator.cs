@@ -4,6 +4,7 @@ namespace ExactTarget.TriggeredEmail
 {
     public interface ITriggeredEmailCreator
     {
-        void Create(string externalKey, IEnumerable<string> dataExtensionFieldNames);
+        int Create(string externalKey);
+        void StartTriggeredSend(string externalKey);
     }
 }
