@@ -11,9 +11,10 @@ namespace ExactTarget.TriggeredEmail.TestConsole
             var creator = new TriggeredEmailCreator(GetConfig());
             //var id = creator.RetrieveTriggeredSendDataExtensionTemplateId();
 
-            //Console.Write(creator.DoesTriggeredSendExist("8A41E6A0200019F7"));
-            creator.Create(externalKey, new List<string>());
-
+            //Console.Write(creator.DoesEmailTemplateExist("template-test-key"));
+            //creator.Create(externalKey, new List<string>());
+            //creator.CreateEmailTemplate(GetConfig().ClientId, "template-test-key", "template-test-key", 
+                //"<custom type =\"content\" name=\"dyanmicArea\"><custom name=\"opencounter\" type=\"tracking\">");
 
 
             

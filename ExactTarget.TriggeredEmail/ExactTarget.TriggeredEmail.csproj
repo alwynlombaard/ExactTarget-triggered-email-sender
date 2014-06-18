@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ExactTarget.EmailFromTemplateCreator">
+      <HintPath>packages\ExactTarget.EmailFromTemplate.1.0.1\lib\ExactTarget.EmailFromTemplateCreator.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -60,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Service References\ExactTargetApi\etframework.wsdl" />
     <None Include="Service References\ExactTargetApi\ETFrameworkFault.xsd">
       <SubType>Designer</SubType>
