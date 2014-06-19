@@ -2,7 +2,6 @@
 {
     public interface IDeliveryProfileClient
     {
-        string CreateDeliveryProfile(string externalKey);
-        bool DoesDeliveryProfileExist(string externalKey);
+        string TryCreateBlankDeliveryProfile(string externalKey);
     }
 }

@@ -5,6 +5,7 @@
         int CreateTriggeredSendDefinition(string externalId,
             int emailId, 
             string dataExtensionCustomerKey,
+            string deliveryProfileCustomerKey,
             string name, 
             string description);
 

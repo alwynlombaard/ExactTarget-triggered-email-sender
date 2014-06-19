@@ -25,6 +25,7 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition
             string externalId,
             int emailId, 
             string dataExtensionCustomerKey,
+            string deliveryProfileCustomerKey,
             string name, 
             string description)
         {
@@ -43,6 +44,10 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition
                 },
                 IsMultipart = true,
                 IsMultipartSpecified = true,
+                DeliveryProfile = new ExactTargetApi.DeliveryProfile
+                {
+                    CustomerKey = deliveryProfileCustomerKey
+                }
 
             };
             string requestId, status;

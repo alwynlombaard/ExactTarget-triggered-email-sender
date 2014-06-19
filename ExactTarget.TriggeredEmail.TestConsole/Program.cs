@@ -12,28 +12,7 @@ namespace ExactTarget.TriggeredEmail.TestConsole
     {
         public static void Main()
         {
-            var dpek = ExternalKeyGenerator.GenerateExternalKey("blank-delivery-profile");
-            var c = new DeliveryProfileClient(GetConfig());
-
-            if (!c.DoesDeliveryProfileExist(dpek))
-            {
-                try
-                {
-                    var id = c.CreateDeliveryProfile(dpek);
-                    Console.Write(id);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
-            }
-
-            Console.WriteLine();
-
-            
-            Console.ReadKey();
-            return;
-            const string externalKey = "my-test-external-key-4";
+            const string externalKey = "my-test-external-key-5";
             try
             {
                 CreateTriggeredSend(externalKey);
@@ -81,7 +60,7 @@ namespace ExactTarget.TriggeredEmail.TestConsole
 
         private static void Send(string externalKey)
         {
-            var triggeredEmail = new ExactTargetTriggeredEmail(externalKey, "someone@temp.uri");
+            var triggeredEmail = new ExactTargetTriggeredEmail(externalKey, "alwyn@justgiving.com");
             triggeredEmail.AddReplacementValues(new Dictionary<string, string>
                 {
                     {"Subject","Test email"}, 

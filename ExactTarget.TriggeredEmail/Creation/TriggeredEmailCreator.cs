@@ -4,6 +4,7 @@ using System.Linq;
 using ExactTarget.TriggeredEmail.Core;
 using ExactTarget.TriggeredEmail.Core.Configuration;
 using ExactTarget.TriggeredEmail.Core.RequestClients.DataExtension;
+using ExactTarget.TriggeredEmail.Core.RequestClients.DeliveryProfile;
 using ExactTarget.TriggeredEmail.Core.RequestClients.Email;
 using ExactTarget.TriggeredEmail.Core.RequestClients.EmailTemplate;
 using ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition;
@@ -19,18 +20,21 @@ namespace ExactTarget.TriggeredEmail.Creation
         private readonly IDataExtensionClient _dataExtensionClient;
         private readonly IEmailTemplateClient _emailTemplateClient;
         private readonly IEmailRequestClient _emailRequestClient;
+        private readonly IDeliveryProfileClient _deliveryProfileClient;
 
         public TriggeredEmailCreator(IExactTargetConfiguration config, 
             IDataExtensionClient dataExtensionClient,
             ITriggeredSendDefinitionClient triggeredSendDefinitionClient,
             IEmailTemplateClient emailTemplateClient,
-            IEmailRequestClient emailRequestClient)
+            IEmailRequestClient emailRequestClient,
+            IDeliveryProfileClient deliveryProfileClient)
         {
             _config = config;
             _dataExtensionClient = dataExtensionClient;
             _triggeredSendDefinitionClient = triggeredSendDefinitionClient;
             _emailTemplateClient = emailTemplateClient;
             _emailRequestClient = emailRequestClient;
+            _deliveryProfileClient = deliveryProfileClient;
         }
 
         public TriggeredEmailCreator(IExactTargetConfiguration config)
@@ -41,6 +45,7 @@ namespace ExactTarget.TriggeredEmail.Creation
             _dataExtensionClient = new DataExtensionClient(config);
             _emailTemplateClient = new EmailTemplateClient(config);
             _emailRequestClient = new EmailRequestClient(config);
+            _deliveryProfileClient = new DeliveryProfileClient(config);
         }
 
         public int Create(string externalKey)
@@ -84,10 +89,14 @@ namespace ExactTarget.TriggeredEmail.Creation
                     emailName,
                     "%%Subject%%",
                     new KeyValuePair<string, string>("dynamicArea", "%%Body%%"));
-            
+
+            var deliveryProfileExternalKey = ExternalKeyGenerator.GenerateExternalKey("blank-delivery-profile");
+            _deliveryProfileClient.TryCreateBlankDeliveryProfile(deliveryProfileExternalKey);
+ 
             return _triggeredSendDefinitionClient.CreateTriggeredSendDefinition(externalKey,
                                                                                 emailId,
                                                                                 dataExtensionExternalKey,
+                                                                                deliveryProfileExternalKey,
                                                                                 externalKey,
                                                                                 externalKey);
         }
