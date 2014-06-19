@@ -45,5 +45,10 @@ namespace ExactTarget.TriggeredEmail.Core
         {
             return _sharedCoreRequestClient.DoesObjectExist("CustomerKey", externalKey, "DataExtension");
         }
+
+        public string RetrieveTriggeredSendDataExtensionTemplateObjectId()
+        {
+            return _sharedCoreRequestClient.RetrieveObjectId("Name", "TriggeredSendDataExtension", "DataExtensionTemplate");
+        }
     }
 }

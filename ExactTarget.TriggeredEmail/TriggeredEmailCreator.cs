@@ -51,7 +51,7 @@ namespace ExactTarget.TriggeredEmail
             var dataExtensionExternalKey = ExternalKeyGenerator.GenerateExternalKey("data-extension-" + externalKey);
             if (!_dataExtensionClient.DoesDataExtensionExist(dataExtensionExternalKey))
             {
-                var dataExtensionTemplateObjectId = _triggeredSendDefinitionClient.RetrieveTriggeredSendDataExtensionTemplateObjectId();
+                var dataExtensionTemplateObjectId = _dataExtensionClient.RetrieveTriggeredSendDataExtensionTemplateObjectId();
                 var dataExtensionFieldNames = new HashSet<string> { "Subject", "Body" };
                 _dataExtensionClient.CreateDataExtension(_config.ClientId, 
                                     dataExtensionTemplateObjectId, 
@@ -98,36 +98,6 @@ namespace ExactTarget.TriggeredEmail
             string requestId, overallStatus;
             var result = _client.Update(new UpdateOptions(), new APIObject[] { ts }, out requestId, out overallStatus);
             ExactTargetResultChecker.CheckResult(result.FirstOrDefault());
-        }
-
-        private string RetrieveTriggeredSendDataExtensionTemplateId()
-        {
-            var request = new RetrieveRequest
-            {
-                ClientIDs =  _config.ClientId.HasValue 
-                            ? new[] { new ClientID { ID = _config.ClientId.Value, IDSpecified = true } } 
-                            : null,
-                ObjectType =  "DataExtensionTemplate",
-                Properties = new[] { "Name", "ObjectID", "CustomerKey" },
-                Filter = new SimpleFilterPart
-                {
-                    Property = "Name",
-                    SimpleOperator = SimpleOperators.@equals,
-                    Value = new[] { "TriggeredSendDataExtension" }
-                }
-            };
-
-            string requestId;
-            APIObject[] results;
-
-            _client.Retrieve(request, out requestId, out results);
-
-            if (results != null && results.Any())
-            {
-                return results.First().ObjectID;
-            }
-
-            return string.Empty;
         }
 
         private int CreateEmailTemplate(int? clientId,

@@ -11,5 +11,7 @@ namespace ExactTarget.TriggeredEmail.Core
             IEnumerable<string> fields);
 
         bool DoesDataExtensionExist(string externalKey);
+        
+        string RetrieveTriggeredSendDataExtensionTemplateObjectId();
     }
 }
