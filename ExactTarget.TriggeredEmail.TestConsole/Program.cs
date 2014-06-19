@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using ExactTarget.TriggeredEmail.Core;
 using ExactTarget.TriggeredEmail.Core.Configuration;
-using ExactTarget.TriggeredEmail.Core.RequestClients.DeliveryProfile;
 using ExactTarget.TriggeredEmail.Creation;
 using ExactTarget.TriggeredEmail.Trigger;
 
