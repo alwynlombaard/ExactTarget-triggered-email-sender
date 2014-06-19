@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ExactTarget.EmailFromTemplateCreator;
 using ExactTarget.TriggeredEmail.Core;
 using ExactTarget.TriggeredEmail.ExactTargetApi;
 
@@ -14,16 +13,19 @@ namespace ExactTarget.TriggeredEmail
         private readonly ITriggeredSendDefinitionClient _triggeredSendDefinitionClient;
         private readonly IDataExtensionClient _dataExtensionClient;
         private readonly IEmailTemplateClient _emailTemplateClient;
+        private readonly IEmailRequestClient _emailRequestClient;
 
         public TriggeredEmailCreator(IExactTargetConfiguration config, 
             IDataExtensionClient dataExtensionClient,
             ITriggeredSendDefinitionClient triggeredSendDefinitionClient,
-            IEmailTemplateClient emailTemplateClient)
+            IEmailTemplateClient emailTemplateClient,
+            IEmailRequestClient emailRequestClient)
         {
             _config = config;
             _dataExtensionClient = dataExtensionClient;
             _triggeredSendDefinitionClient = triggeredSendDefinitionClient;
             _emailTemplateClient = emailTemplateClient;
+            _emailRequestClient = emailRequestClient;
         }
 
         public TriggeredEmailCreator(IExactTargetConfiguration config)
@@ -33,6 +35,7 @@ namespace ExactTarget.TriggeredEmail
             _triggeredSendDefinitionClient = new TriggeredSendDefinitionClient(config);
             _dataExtensionClient = new DataExtensionClient(config);
             _emailTemplateClient = new EmailTemplateClient(config);
+            _emailRequestClient = new EmailRequestClient(config);
         }
 
         public int Create(string externalKey)
@@ -63,17 +66,15 @@ namespace ExactTarget.TriggeredEmail
 
             var emailTempalteExternalKey = ExternalKeyGenerator.GenerateExternalKey("email-template" + externalKey);
             var emailTemplateId = _emailTemplateClient.RetrieveEmailTemplateId(emailTempalteExternalKey);
-
             if (emailTemplateId == 0)
             {
-                emailTemplateId = CreateEmailTemplate(_config.ClientId,
-                    emailTempalteExternalKey,
-                    "template-" + externalKey,
-                    "<custom type=\"content\" name=\"dynamicArea\"><custom name=\"opencounter\" type=\"tracking\">");
+                emailTemplateId = _emailTemplateClient.CreateEmailTemplate(emailTempalteExternalKey,
+                                "template-" + externalKey,
+                                "<custom type=\"content\" name=\"dynamicArea\"><custom name=\"opencounter\" type=\"tracking\">");
             }
 
             var emailName = "email-" + externalKey;
-            var emailId = CreateEmailFromTemplate(emailTemplateId,
+            var emailId = _emailRequestClient.CreateEmailFromTemplate(emailTemplateId,
                     emailName,
                     "%%Subject%%",
                     new KeyValuePair<string, string>("dynamicArea", "%%Body%%"));
@@ -98,41 +99,6 @@ namespace ExactTarget.TriggeredEmail
             string requestId, overallStatus;
             var result = _client.Update(new UpdateOptions(), new APIObject[] { ts }, out requestId, out overallStatus);
             ExactTargetResultChecker.CheckResult(result.FirstOrDefault());
-        }
-
-        private int CreateEmailTemplate(int? clientId,
-            string externalKey,
-            string name,
-            string html)
-        {
-            var template = new Template
-            {
-                Client = clientId.HasValue ? new ClientID {ID = clientId.Value, IDSpecified = true} : null,
-                TemplateName = name,
-                CustomerKey = externalKey,
-                LayoutHTML = html,
-            };
-            
-            string requestId, status;
-            var result = _client.Create(new CreateOptions(), new APIObject[] { template }, out requestId, out status);
-
-            ExactTargetResultChecker.CheckResult(result.FirstOrDefault()); //we expect only one result because we've sent only one APIObject
-
-            return result.First().NewID;
-        }
-
-
-        private int CreateEmailFromTemplate(int emailTemplateId, string emailName, string subject, KeyValuePair<string, string> contentArea )
-        {
-            var emailCreator = new EmailCreator(new EmailFromTemplateCreator.ExactTargetConfiguration
-            {
-                ApiUserName = _config.ApiUserName,
-                ApiPassword = _config.ApiPassword,
-                ClientId = _config.ClientId,
-                EndPoint = _config.EndPoint,
-                SoapBinding = _config.SoapBinding
-            });
-            return emailCreator.Create(emailTemplateId, emailName, subject, contentArea);
         }
     }
 }

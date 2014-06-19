@@ -7,7 +7,7 @@ namespace ExactTarget.TriggeredEmail.TestConsole
     {
         public static void Main()
         {
-            const string externalKey = "my-test-external-key-2";
+            const string externalKey = "my-test-external-key-3";
             try
             {
                 var creator = new TriggeredEmailCreator(GetConfig());

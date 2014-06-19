@@ -47,9 +47,12 @@
     <Compile Include="Core\ClientFactory.cs" />
     <Compile Include="Core\CoreRequestClient.cs" />
     <Compile Include="Core\DataExtensionClient.cs" />
+    <Compile Include="Core\EmailRequestClient.cs" />
     <Compile Include="Core\EmailTemplateClient.cs" />
     <Compile Include="Core\ExactTargetResultChecker.cs" />
     <Compile Include="Core\IDataExtensionClient.cs" />
+    <Compile Include="Core\IEmailRequestClient.cs" />
+    <Compile Include="Core\IEmailTemplateClient.cs" />
     <Compile Include="Core\ISharedCoreRequestClient.cs" />
     <Compile Include="Core\ITriggeredSendDefinitionClient.cs" />
     <Compile Include="Core\TriggeredSendDefinitionClient.cs" />
