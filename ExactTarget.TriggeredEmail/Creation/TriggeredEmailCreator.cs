@@ -9,7 +9,7 @@ using ExactTarget.TriggeredEmail.Core.RequestClients.EmailTemplate;
 using ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition;
 using ExactTarget.TriggeredEmail.ExactTargetApi;
 
-namespace ExactTarget.TriggeredEmail
+namespace ExactTarget.TriggeredEmail.Creation
 {
     public class TriggeredEmailCreator : ITriggeredEmailCreator
     {

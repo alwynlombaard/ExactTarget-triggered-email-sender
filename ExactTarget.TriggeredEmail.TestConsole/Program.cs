@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using ExactTarget.TriggeredEmail.Core.Configuration;
+using ExactTarget.TriggeredEmail.Creation;
+using ExactTarget.TriggeredEmail.Trigger;
 
 namespace ExactTarget.TriggeredEmail.TestConsole
 {

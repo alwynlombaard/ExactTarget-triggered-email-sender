@@ -6,7 +6,7 @@ using ExactTarget.TriggeredEmail.Core.Configuration;
 using ExactTarget.TriggeredEmail.ExactTargetApi;
 using Attribute = ExactTarget.TriggeredEmail.ExactTargetApi.Attribute;
 
-namespace ExactTarget.TriggeredEmail
+namespace ExactTarget.TriggeredEmail.Trigger
 {
     public enum RequestQueueing
     {

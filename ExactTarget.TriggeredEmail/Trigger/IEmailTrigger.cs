@@ -1,4 +1,4 @@
-﻿namespace ExactTarget.TriggeredEmail
+﻿namespace ExactTarget.TriggeredEmail.Trigger
 {
     public interface IEmailTrigger
     {

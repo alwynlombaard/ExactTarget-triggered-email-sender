@@ -59,17 +59,17 @@
     <Compile Include="Core\RequestClients\Shared\SharedCoreRequestClient.cs" />
     <Compile Include="Core\RequestClients\TriggeredSendDefinition\ITriggeredSendDefinitionClient.cs" />
     <Compile Include="Core\RequestClients\TriggeredSendDefinition\TriggeredSendDefinitionClient.cs" />
-    <Compile Include="EmailTrigger.cs" />
-    <Compile Include="IEmailTrigger.cs" />
-    <Compile Include="ExactTargetTriggeredEmail.cs" />
-    <Compile Include="ITriggeredEmailCreator.cs" />
+    <Compile Include="Creation\ITriggeredEmailCreator.cs" />
+    <Compile Include="Creation\TriggeredEmailCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\ExactTargetApi\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="TriggeredEmailCreator.cs" />
+    <Compile Include="Trigger\EmailTrigger.cs" />
+    <Compile Include="Trigger\ExactTargetTriggeredEmail.cs" />
+    <Compile Include="Trigger\IEmailTrigger.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

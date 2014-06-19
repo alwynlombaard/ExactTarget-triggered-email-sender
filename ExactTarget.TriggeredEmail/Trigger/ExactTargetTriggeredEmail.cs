@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ExactTarget.TriggeredEmail
+namespace ExactTarget.TriggeredEmail.Trigger
 {
     public class ExactTargetTriggeredEmail
     {
