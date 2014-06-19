@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ExactTarget.TriggeredEmail.Core.Configuration;
+using ExactTarget.TriggeredEmail.Core.RequestClients.Shared;
 using ExactTarget.TriggeredEmail.ExactTargetApi;
 
-namespace ExactTarget.TriggeredEmail.Core
+namespace ExactTarget.TriggeredEmail.Core.RequestClients.DataExtension
 {
     public class DataExtensionClient : IDataExtensionClient
     {
@@ -11,7 +13,7 @@ namespace ExactTarget.TriggeredEmail.Core
 
         public DataExtensionClient(IExactTargetConfiguration config)
         {
-            _client = ClientFactory.Manufacture(config);
+            _client = SoapClientFactory.Manufacture(config);
             _sharedCoreRequestClient = new SharedCoreRequestClient(config);
         }
 
@@ -21,7 +23,7 @@ namespace ExactTarget.TriggeredEmail.Core
                                            string name,
                                            IEnumerable<string> fields)
         {
-            var de = new DataExtension
+            var de = new ExactTargetApi.DataExtension
             {
                 Client = clientId.HasValue ? new ClientID { ID = clientId.Value, IDSpecified = true } : null,
                 Name = name,

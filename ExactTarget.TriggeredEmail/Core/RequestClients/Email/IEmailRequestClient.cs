@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ExactTarget.TriggeredEmail.Core
+namespace ExactTarget.TriggeredEmail.Core.RequestClients.Email
 {
     public interface IEmailRequestClient
     {

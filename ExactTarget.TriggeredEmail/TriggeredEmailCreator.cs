@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using ExactTarget.TriggeredEmail.Core;
+using ExactTarget.TriggeredEmail.Core.Configuration;
+using ExactTarget.TriggeredEmail.Core.RequestClients.DataExtension;
+using ExactTarget.TriggeredEmail.Core.RequestClients.Email;
+using ExactTarget.TriggeredEmail.Core.RequestClients.EmailTemplate;
+using ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition;
 using ExactTarget.TriggeredEmail.ExactTargetApi;
 
 namespace ExactTarget.TriggeredEmail
@@ -30,7 +35,7 @@ namespace ExactTarget.TriggeredEmail
 
         public TriggeredEmailCreator(IExactTargetConfiguration config)
         {
-            _client = ClientFactory.Manufacture(config);
+            _client = SoapClientFactory.Manufacture(config);
             _config = config;
             _triggeredSendDefinitionClient = new TriggeredSendDefinitionClient(config);
             _dataExtensionClient = new DataExtensionClient(config);
@@ -70,7 +75,9 @@ namespace ExactTarget.TriggeredEmail
             {
                 emailTemplateId = _emailTemplateClient.CreateEmailTemplate(emailTempalteExternalKey,
                                 "template-" + externalKey,
-                                "<custom type=\"content\" name=\"dynamicArea\"><custom name=\"opencounter\" type=\"tracking\">");
+                                "<body><custom type=\"content\" name=\"dynamicArea\"><custom name=\"opencounter\" type=\"tracking\">" +
+                                "<table cellpadding=\"2\" cellspacing=\"0\" width=\"600\" ID=\"Table5\" Border=\"0\"><tr><td><font face=\"verdana\" size=\"1\" color=\"#444444\">This email was sent by: <b>%%Member_Busname%%</b><br>%%Member_Addr%% %%Member_City%%, %%Member_State%%, %%Member_PostalCode%%, %%Member_Country%%<br><br></font></td></tr></table>" + 
+                                "</body>");
             }
 
             var emailName = "email-" + externalKey;

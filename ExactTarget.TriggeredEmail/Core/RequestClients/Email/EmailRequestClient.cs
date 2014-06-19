@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using ExactTarget.EmailFromTemplateCreator;
 using ExactTarget.TriggeredEmail.ExactTargetApi;
+using IExactTargetConfiguration = ExactTarget.TriggeredEmail.Core.Configuration.IExactTargetConfiguration;
 
-namespace ExactTarget.TriggeredEmail.Core
+namespace ExactTarget.TriggeredEmail.Core.RequestClients.Email
 {
     public class EmailRequestClient : IEmailRequestClient
     {
@@ -14,14 +15,14 @@ namespace ExactTarget.TriggeredEmail.Core
         public EmailRequestClient(IExactTargetConfiguration config, IEmailCreator emailFromTemplateCreator)
         {
             _config = config;
-            _client = ClientFactory.Manufacture(config);
+            _client = SoapClientFactory.Manufacture(config);
             _emailFromTemplateCreator = emailFromTemplateCreator;
         }
 
         public EmailRequestClient(IExactTargetConfiguration config)
         {
             _config = config;
-            _client = ClientFactory.Manufacture(config);
+            _client = SoapClientFactory.Manufacture(config);
             _emailFromTemplateCreator = new EmailCreator(new EmailFromTemplateCreator.ExactTargetConfiguration
             {
                 ApiUserName = _config.ApiUserName,

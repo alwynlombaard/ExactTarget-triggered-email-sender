@@ -1,7 +1,8 @@
 ﻿using System.Linq;
+using ExactTarget.TriggeredEmail.Core.Configuration;
 using ExactTarget.TriggeredEmail.ExactTargetApi;
 
-namespace ExactTarget.TriggeredEmail.Core
+namespace ExactTarget.TriggeredEmail.Core.RequestClients.EmailTemplate
 {
     public class EmailTemplateClient : IEmailTemplateClient
     {
@@ -10,7 +11,7 @@ namespace ExactTarget.TriggeredEmail.Core
 
         public EmailTemplateClient(IExactTargetConfiguration config)
         {
-            _client = ClientFactory.Manufacture(config);
+            _client = SoapClientFactory.Manufacture(config);
             _config = config;
         }
 

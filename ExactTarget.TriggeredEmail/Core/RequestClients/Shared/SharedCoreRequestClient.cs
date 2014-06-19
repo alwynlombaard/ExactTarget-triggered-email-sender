@@ -1,7 +1,8 @@
 ﻿using System.Linq;
+using ExactTarget.TriggeredEmail.Core.Configuration;
 using ExactTarget.TriggeredEmail.ExactTargetApi;
 
-namespace ExactTarget.TriggeredEmail.Core
+namespace ExactTarget.TriggeredEmail.Core.RequestClients.Shared
 {
     public class SharedCoreRequestClient : ISharedCoreRequestClient
     {
@@ -10,7 +11,7 @@ namespace ExactTarget.TriggeredEmail.Core
 
         public SharedCoreRequestClient(IExactTargetConfiguration config)
         {
-            _client = ClientFactory.Manufacture(config);
+            _client = SoapClientFactory.Manufacture(config);
             _config = config;
         }
 

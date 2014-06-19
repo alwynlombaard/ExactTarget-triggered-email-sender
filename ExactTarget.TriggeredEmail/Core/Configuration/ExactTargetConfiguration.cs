@@ -1,4 +1,4 @@
-﻿namespace ExactTarget.TriggeredEmail
+﻿namespace ExactTarget.TriggeredEmail.Core.Configuration
 {
     public class ExactTargetConfiguration : IExactTargetConfiguration
     {

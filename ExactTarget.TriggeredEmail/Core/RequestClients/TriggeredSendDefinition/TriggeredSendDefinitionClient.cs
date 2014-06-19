@@ -1,7 +1,9 @@
 ﻿using System.Linq;
+using ExactTarget.TriggeredEmail.Core.Configuration;
+using ExactTarget.TriggeredEmail.Core.RequestClients.Shared;
 using ExactTarget.TriggeredEmail.ExactTargetApi;
 
-namespace ExactTarget.TriggeredEmail.Core
+namespace ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition
 {
     public class TriggeredSendDefinitionClient : ITriggeredSendDefinitionClient
     {
@@ -26,11 +28,11 @@ namespace ExactTarget.TriggeredEmail.Core
             string name, 
             string description)
         {
-            var ts = new TriggeredSendDefinition
+            var ts = new ExactTargetApi.TriggeredSendDefinition
             {
                 Client = _config.ClientId.HasValue ? new ClientID { ID = _config.ClientId.Value, IDSpecified = true } : null,
-                Email = new Email { ID = emailId, IDSpecified = true },
-                SendSourceDataExtension = new DataExtension { CustomerKey = dataExtensionCustomerKey },
+                Email = new ExactTargetApi.Email { ID = emailId, IDSpecified = true },
+                SendSourceDataExtension = new ExactTargetApi.DataExtension { CustomerKey = dataExtensionCustomerKey },
                 Name = name,
                 Description = description,
                 CustomerKey = externalId,

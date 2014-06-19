@@ -44,23 +44,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\ClientFactory.cs" />
-    <Compile Include="Core\CoreRequestClient.cs" />
-    <Compile Include="Core\DataExtensionClient.cs" />
-    <Compile Include="Core\EmailRequestClient.cs" />
-    <Compile Include="Core\EmailTemplateClient.cs" />
+    <Compile Include="Core\SoapClientFactory.cs" />
+    <Compile Include="Core\Configuration\ExactTargetConfiguration.cs" />
+    <Compile Include="Core\Configuration\IExactTargetConfiguration.cs" />
+    <Compile Include="Core\RequestClients\DataExtension\DataExtensionClient.cs" />
+    <Compile Include="Core\RequestClients\DataExtension\IDataExtensionClient.cs" />
+    <Compile Include="Core\RequestClients\EmailTemplate\EmailTemplateClient.cs" />
+    <Compile Include="Core\RequestClients\EmailTemplate\IEmailTemplateClient.cs" />
+    <Compile Include="Core\RequestClients\Email\EmailRequestClient.cs" />
+    <Compile Include="Core\RequestClients\Email\IEmailRequestClient.cs" />
     <Compile Include="Core\ExactTargetResultChecker.cs" />
-    <Compile Include="Core\IDataExtensionClient.cs" />
-    <Compile Include="Core\IEmailRequestClient.cs" />
-    <Compile Include="Core\IEmailTemplateClient.cs" />
-    <Compile Include="Core\ISharedCoreRequestClient.cs" />
-    <Compile Include="Core\ITriggeredSendDefinitionClient.cs" />
-    <Compile Include="Core\TriggeredSendDefinitionClient.cs" />
+    <Compile Include="Core\ExternalKeyGenerator.cs" />
+    <Compile Include="Core\RequestClients\Shared\ISharedCoreRequestClient.cs" />
+    <Compile Include="Core\RequestClients\Shared\SharedCoreRequestClient.cs" />
+    <Compile Include="Core\RequestClients\TriggeredSendDefinition\ITriggeredSendDefinitionClient.cs" />
+    <Compile Include="Core\RequestClients\TriggeredSendDefinition\TriggeredSendDefinitionClient.cs" />
     <Compile Include="EmailTrigger.cs" />
-    <Compile Include="ExactTargetConfiguration.cs" />
-    <Compile Include="ExternalKeyGenerator.cs" />
     <Compile Include="IEmailTrigger.cs" />
-    <Compile Include="IExactTargetConfiguration.cs" />
     <Compile Include="ExactTargetTriggeredEmail.cs" />
     <Compile Include="ITriggeredEmailCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -172,6 +172,7 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

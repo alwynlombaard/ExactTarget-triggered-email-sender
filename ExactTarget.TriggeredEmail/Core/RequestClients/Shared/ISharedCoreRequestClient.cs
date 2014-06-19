@@ -1,4 +1,4 @@
-﻿namespace ExactTarget.TriggeredEmail.Core
+﻿namespace ExactTarget.TriggeredEmail.Core.RequestClients.Shared
 {
     public interface ISharedCoreRequestClient
     {
