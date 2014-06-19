@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using ExactTarget.TriggeredEmail.Core;
 using ExactTarget.TriggeredEmail.Core.Configuration;
+using ExactTarget.TriggeredEmail.Core.RequestClients.DeliveryProfile;
 using ExactTarget.TriggeredEmail.Creation;
 using ExactTarget.TriggeredEmail.Trigger;
 
@@ -10,6 +12,27 @@ namespace ExactTarget.TriggeredEmail.TestConsole
     {
         public static void Main()
         {
+            var dpek = ExternalKeyGenerator.GenerateExternalKey("blank-delivery-profile");
+            var c = new DeliveryProfileClient(GetConfig());
+
+            if (!c.DoesDeliveryProfileExist(dpek))
+            {
+                try
+                {
+                    var id = c.CreateDeliveryProfile(dpek);
+                    Console.Write(id);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+
+            Console.WriteLine();
+
+            
+            Console.ReadKey();
+            return;
             const string externalKey = "my-test-external-key-4";
             try
             {

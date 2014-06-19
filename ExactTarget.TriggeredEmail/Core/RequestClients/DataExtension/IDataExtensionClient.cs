@@ -4,8 +4,7 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.DataExtension
 {
     public interface IDataExtensionClient
     {
-        void CreateDataExtension(int? clientId,
-            string dataExtensionTemplateObjectId,
+        void CreateDataExtension(string dataExtensionTemplateObjectId,
             string externalKey,
             string name,
             IEnumerable<string> fields);

@@ -8,24 +8,25 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.DataExtension
 {
     public class DataExtensionClient : IDataExtensionClient
     {
+        private readonly IExactTargetConfiguration _config;
         private readonly SoapClient _client;
         private readonly SharedCoreRequestClient _sharedCoreRequestClient;
 
         public DataExtensionClient(IExactTargetConfiguration config)
         {
+            _config = config;
             _client = SoapClientFactory.Manufacture(config);
             _sharedCoreRequestClient = new SharedCoreRequestClient(config);
         }
 
-        public void CreateDataExtension(int? clientId,
-                                           string dataExtensionTemplateObjectId,
+        public void CreateDataExtension(string dataExtensionTemplateObjectId,
                                            string externalKey,
                                            string name,
                                            IEnumerable<string> fields)
         {
             var de = new ExactTargetApi.DataExtension
             {
-                Client = clientId.HasValue ? new ClientID { ID = clientId.Value, IDSpecified = true } : null,
+                Client = _config.ClientId.HasValue ? new ClientID { ID = _config.ClientId.Value, IDSpecified = true } : null,
                 Name = name,
                 CustomerKey = externalKey,
                 Template = new DataExtensionTemplate { ObjectID = dataExtensionTemplateObjectId },

@@ -61,8 +61,7 @@ namespace ExactTarget.TriggeredEmail.Creation
             {
                 var dataExtensionTemplateObjectId = _dataExtensionClient.RetrieveTriggeredSendDataExtensionTemplateObjectId();
                 var dataExtensionFieldNames = new HashSet<string> { "Subject", "Body" };
-                _dataExtensionClient.CreateDataExtension(_config.ClientId, 
-                                    dataExtensionTemplateObjectId, 
+                _dataExtensionClient.CreateDataExtension(dataExtensionTemplateObjectId, 
                                     dataExtensionExternalKey, 
                                     "triggeredsend-" + externalKey, 
                                     dataExtensionFieldNames);
