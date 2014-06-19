@@ -4,29 +4,19 @@ using ExactTarget.TriggeredEmail.ExactTargetApi;
 
 namespace ExactTarget.TriggeredEmail.Core
 {
-    public interface IDataExtensionCreator
+    public class DataExtensionClient : IDataExtensionClient
     {
-        void CreateDataExtension(int? clientId,
-            string dataExtensionTemplateId,
-            string externalKey,
-            string name,
-            IEnumerable<string> fields);
-    }
+        private readonly SoapClient _client;
+        private readonly SharedCoreRequestClient _sharedCoreRequestClient;
 
-    public class DataExtensionCreator : IDataExtensionCreator
-    {
-       private readonly SoapClient _client;
-
-        public DataExtensionCreator(IExactTargetConfiguration config)
+        public DataExtensionClient(IExactTargetConfiguration config)
         {
-            _client = new SoapClient(config.SoapBinding ?? "ExactTarget.Soap", config.EndPoint);
-            if (_client.ClientCredentials == null) return;
-            _client.ClientCredentials.UserName.UserName = config.ApiUserName;
-            _client.ClientCredentials.UserName.Password = config.ApiPassword;
+            _client = ClientFactory.Manufacture(config);
+            _sharedCoreRequestClient = new SharedCoreRequestClient(config);
         }
 
         public void CreateDataExtension(int? clientId,
-                                           string dataExtensionTemplateId,
+                                           string dataExtensionTemplateObjectId,
                                            string externalKey,
                                            string name,
                                            IEnumerable<string> fields)
@@ -36,7 +26,7 @@ namespace ExactTarget.TriggeredEmail.Core
                 Client = clientId.HasValue ? new ClientID { ID = clientId.Value, IDSpecified = true } : null,
                 Name = name,
                 CustomerKey = externalKey,
-                Template = new DataExtensionTemplate { ObjectID = dataExtensionTemplateId },
+                Template = new DataExtensionTemplate { ObjectID = dataExtensionTemplateObjectId },
                 Fields = fields.Select(field => new DataExtensionField
                 {
                     Name = field,
@@ -51,5 +41,9 @@ namespace ExactTarget.TriggeredEmail.Core
             ExactTargetResultChecker.CheckResult(result.FirstOrDefault()); //we expect only one result because we've sent only one APIObject
         }
 
+        public bool DoesDataExtensionExist(string externalKey)
+        {
+            return _sharedCoreRequestClient.DoesObjectExist("CustomerKey", externalKey, "DataExtension");
+        }
     }
 }

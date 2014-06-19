@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using ExactTarget.EmailFromTemplateCreator;
 using ExactTarget.TriggeredEmail.Core;
 using ExactTarget.TriggeredEmail.ExactTargetApi;
@@ -13,57 +11,58 @@ namespace ExactTarget.TriggeredEmail
     {
         private readonly IExactTargetConfiguration _config;
         private readonly SoapClient _client;
-        private readonly ITriggeredSendDefinitionCreator _triggeredSendDefinitionCreator;
-        private readonly IDataExtensionCreator _dataExtensionCreator;
+        private readonly ITriggeredSendDefinitionClient _triggeredSendDefinitionClient;
+        private readonly IDataExtensionClient _dataExtensionClient;
+        private readonly IEmailTemplateClient _emailTemplateClient;
 
         public TriggeredEmailCreator(IExactTargetConfiguration config, 
-            IDataExtensionCreator dataExtensionCreator,
-            ITriggeredSendDefinitionCreator triggeredSendDefinitionCreator)
+            IDataExtensionClient dataExtensionClient,
+            ITriggeredSendDefinitionClient triggeredSendDefinitionClient,
+            IEmailTemplateClient emailTemplateClient)
         {
             _config = config;
-            _dataExtensionCreator = dataExtensionCreator;
-            _triggeredSendDefinitionCreator = triggeredSendDefinitionCreator;
+            _dataExtensionClient = dataExtensionClient;
+            _triggeredSendDefinitionClient = triggeredSendDefinitionClient;
+            _emailTemplateClient = emailTemplateClient;
         }
 
         public TriggeredEmailCreator(IExactTargetConfiguration config)
         {
+            _client = ClientFactory.Manufacture(config);
             _config = config;
-            _client = new SoapClient(_config.SoapBinding ?? "ExactTarget.Soap", _config.EndPoint);
-            if (_client.ClientCredentials == null) return;
-            _client.ClientCredentials.UserName.UserName = _config.ApiUserName;
-            _client.ClientCredentials.UserName.Password = _config.ApiPassword;
-            _triggeredSendDefinitionCreator = new TriggeredSendDefinitionCreator(config);
-            _dataExtensionCreator = new DataExtensionCreator(config);
-
+            _triggeredSendDefinitionClient = new TriggeredSendDefinitionClient(config);
+            _dataExtensionClient = new DataExtensionClient(config);
+            _emailTemplateClient = new EmailTemplateClient(config);
         }
 
         public int Create(string externalKey)
         {
-            var dataExtensionFieldNames = new HashSet<string>{"Subject", "Body"};
+            
             if (externalKey.Length > Guid.Empty.ToString().Length)
             {
                 throw new ArgumentException("externalKey too long, should be max length of " + Guid.Empty.ToString().Length, "externalKey");
             }
 
-            if (DoesTriggeredSendDefinitionExist(externalKey))
+            if (_triggeredSendDefinitionClient.DoesTriggeredSendDefinitionExist(externalKey))
             {
                 throw new Exception(string.Format("A TriggeredSendDefinition with external key {0} already exsits", externalKey));
             }
 
-            var dataExtensionExternalKey = GenerateExternalKey("data-extension-" + externalKey);
-            if (!DoesDataExtensionExist(dataExtensionExternalKey))
+            var dataExtensionExternalKey = ExternalKeyGenerator.GenerateExternalKey("data-extension-" + externalKey);
+            if (!_dataExtensionClient.DoesDataExtensionExist(dataExtensionExternalKey))
             {
-                var dataExtensionTemplateId = RetrieveTriggeredSendDataExtensionTemplateId();
-                _dataExtensionCreator.CreateDataExtension(_config.ClientId, 
-                                    dataExtensionTemplateId, 
+                var dataExtensionTemplateObjectId = _triggeredSendDefinitionClient.RetrieveTriggeredSendDataExtensionTemplateObjectId();
+                var dataExtensionFieldNames = new HashSet<string> { "Subject", "Body" };
+                _dataExtensionClient.CreateDataExtension(_config.ClientId, 
+                                    dataExtensionTemplateObjectId, 
                                     dataExtensionExternalKey, 
                                     "triggeredsend-" + externalKey, 
                                     dataExtensionFieldNames);
                 
             }
 
-            var emailTempalteExternalKey = GenerateExternalKey("email-template" + externalKey);
-            var emailTemplateId = RetrieveEmailTemplateId(emailTempalteExternalKey);
+            var emailTempalteExternalKey = ExternalKeyGenerator.GenerateExternalKey("email-template" + externalKey);
+            var emailTemplateId = _emailTemplateClient.RetrieveEmailTemplateId(emailTempalteExternalKey);
 
             if (emailTemplateId == 0)
             {
@@ -79,12 +78,11 @@ namespace ExactTarget.TriggeredEmail
                     "%%Subject%%",
                     new KeyValuePair<string, string>("dynamicArea", "%%Body%%"));
             
-            return _triggeredSendDefinitionCreator.CreateTriggeredSendDefinition(_config.ClientId,
-                externalKey,
-                emailId,
-                dataExtensionExternalKey,
-                externalKey,
-                externalKey);
+            return _triggeredSendDefinitionClient.CreateTriggeredSendDefinition(externalKey,
+                                                                                emailId,
+                                                                                dataExtensionExternalKey,
+                                                                                externalKey,
+                                                                                externalKey);
         }
 
         public void StartTriggeredSend(string externalKey)
@@ -100,72 +98,6 @@ namespace ExactTarget.TriggeredEmail
             string requestId, overallStatus;
             var result = _client.Update(new UpdateOptions(), new APIObject[] { ts }, out requestId, out overallStatus);
             ExactTargetResultChecker.CheckResult(result.FirstOrDefault());
-        }
-
-        private string GenerateExternalKey(string value)
-        {
-            var md5 = MD5.Create();
-            var bytes = md5.ComputeHash(Encoding.UTF8.GetBytes(value));
-            return new Guid(bytes).ToString();
-        }
-
-        private bool DoesTriggeredSendDefinitionExist(string externalKey)
-        {
-            return DoesObjectExist(externalKey, "TriggeredSendDefinition");
-        }
-
-        private bool DoesDataExtensionExist(string externalKey)
-        {
-            return DoesObjectExist(externalKey, "DataExtension");
-        }
-
-        private int RetrieveEmailTemplateId(string externalKey)
-        {
-            var request = new RetrieveRequest
-            {
-                ClientIDs = _config.ClientId.HasValue
-                    ? new[] { new ClientID { ID = _config.ClientId.Value, IDSpecified = true } }
-                    : null,
-                ObjectType = "Template",
-                Properties = new[] {"ID", "TemplateName", "ObjectID", "CustomerKey" },
-                Filter = new SimpleFilterPart
-                {
-                    Property = "CustomerKey",
-                    SimpleOperator = SimpleOperators.@equals,
-                    Value = new[] { externalKey }
-                }
-            };
-
-            string requestId;
-            APIObject[] results;
-            _client.Retrieve(request, out requestId, out results);
-
-            return results != null && results.Any() ? results.First().ID : 0;
-        }
-
-        private bool DoesObjectExist(string externalKey, string objectType)
-        {
-            var request = new RetrieveRequest
-            {
-                ClientIDs = _config.ClientId.HasValue
-                    ? new[] { new ClientID { ID = _config.ClientId.Value, IDSpecified = true } }
-                    : null,
-                ObjectType = objectType,
-                Properties = new[] { "Name", "ObjectID", "CustomerKey" },
-                Filter = new SimpleFilterPart
-                {
-                    Property = "CustomerKey",
-                    SimpleOperator = SimpleOperators.@equals,
-                    Value = new[] { externalKey }
-                }
-            };
-
-            string requestId;
-            APIObject[] results;
-
-            _client.Retrieve(request, out requestId, out results);
-
-            return results != null && results.Any();
         }
 
         private string RetrieveTriggeredSendDataExtensionTemplateId()

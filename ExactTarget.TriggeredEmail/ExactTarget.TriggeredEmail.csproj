@@ -44,11 +44,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\DataExtensionCreator.cs" />
+    <Compile Include="Core\ClientFactory.cs" />
+    <Compile Include="Core\CoreRequestClient.cs" />
+    <Compile Include="Core\DataExtensionClient.cs" />
+    <Compile Include="Core\EmailTemplateClient.cs" />
     <Compile Include="Core\ExactTargetResultChecker.cs" />
-    <Compile Include="Core\TriggeredSendDefinitionCreator.cs" />
+    <Compile Include="Core\IDataExtensionClient.cs" />
+    <Compile Include="Core\ISharedCoreRequestClient.cs" />
+    <Compile Include="Core\ITriggeredSendDefinitionClient.cs" />
+    <Compile Include="Core\TriggeredSendDefinitionClient.cs" />
     <Compile Include="EmailTrigger.cs" />
     <Compile Include="ExactTargetConfiguration.cs" />
+    <Compile Include="ExternalKeyGenerator.cs" />
     <Compile Include="IEmailTrigger.cs" />
     <Compile Include="IExactTargetConfiguration.cs" />
     <Compile Include="ExactTargetTriggeredEmail.cs" />

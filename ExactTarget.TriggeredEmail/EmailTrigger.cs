@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ExactTarget.TriggeredEmail.Core;
 using ExactTarget.TriggeredEmail.ExactTargetApi;
 using Attribute = ExactTarget.TriggeredEmail.ExactTargetApi.Attribute;
 
@@ -30,12 +31,7 @@ namespace ExactTarget.TriggeredEmail
         public void Trigger(ExactTargetTriggeredEmail exactTargetTriggeredEmail, RequestQueueing requestQueueing = RequestQueueing.No, Priority priority = Priority.Normal)
         {
             var clientId = _config.ClientId;
-            var client = new SoapClient(_config.SoapBinding ?? "ExactTarget.Soap", _config.EndPoint);
-            if (client.ClientCredentials != null)
-            {
-                client.ClientCredentials.UserName.UserName = _config.ApiUserName;
-                client.ClientCredentials.UserName.Password = _config.ApiPassword;
-            }
+            var client =  ClientFactory.Manufacture(_config);
 
             var subscribers = new List<Subscriber>
                 {
