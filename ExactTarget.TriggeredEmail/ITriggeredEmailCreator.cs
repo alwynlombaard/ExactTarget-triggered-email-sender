@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ExactTarget.TriggeredEmail
+﻿namespace ExactTarget.TriggeredEmail
 {
     public interface ITriggeredEmailCreator
     {

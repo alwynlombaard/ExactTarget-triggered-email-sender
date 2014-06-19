@@ -44,6 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\DataExtensionCreator.cs" />
+    <Compile Include="Core\ExactTargetResultChecker.cs" />
+    <Compile Include="Core\TriggeredSendDefinitionCreator.cs" />
     <Compile Include="EmailTrigger.cs" />
     <Compile Include="ExactTargetConfiguration.cs" />
     <Compile Include="IEmailTrigger.cs" />
