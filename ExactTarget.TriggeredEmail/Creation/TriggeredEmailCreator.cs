@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ExactTarget.TriggeredEmail.Core;
 using ExactTarget.TriggeredEmail.Core.Configuration;
 using ExactTarget.TriggeredEmail.Core.RequestClients.DataExtension;
@@ -8,28 +7,23 @@ using ExactTarget.TriggeredEmail.Core.RequestClients.DeliveryProfile;
 using ExactTarget.TriggeredEmail.Core.RequestClients.Email;
 using ExactTarget.TriggeredEmail.Core.RequestClients.EmailTemplate;
 using ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition;
-using ExactTarget.TriggeredEmail.ExactTargetApi;
 
 namespace ExactTarget.TriggeredEmail.Creation
 {
     public class TriggeredEmailCreator : ITriggeredEmailCreator
     {
-        private readonly IExactTargetConfiguration _config;
-        private readonly SoapClient _client;
         private readonly ITriggeredSendDefinitionClient _triggeredSendDefinitionClient;
         private readonly IDataExtensionClient _dataExtensionClient;
         private readonly IEmailTemplateClient _emailTemplateClient;
         private readonly IEmailRequestClient _emailRequestClient;
         private readonly IDeliveryProfileClient _deliveryProfileClient;
 
-        public TriggeredEmailCreator(IExactTargetConfiguration config, 
-            IDataExtensionClient dataExtensionClient,
+        public TriggeredEmailCreator(IDataExtensionClient dataExtensionClient,
             ITriggeredSendDefinitionClient triggeredSendDefinitionClient,
             IEmailTemplateClient emailTemplateClient,
             IEmailRequestClient emailRequestClient,
             IDeliveryProfileClient deliveryProfileClient)
         {
-            _config = config;
             _dataExtensionClient = dataExtensionClient;
             _triggeredSendDefinitionClient = triggeredSendDefinitionClient;
             _emailTemplateClient = emailTemplateClient;
@@ -39,8 +33,6 @@ namespace ExactTarget.TriggeredEmail.Creation
 
         public TriggeredEmailCreator(IExactTargetConfiguration config)
         {
-            _client = SoapClientFactory.Manufacture(config);
-            _config = config;
             _triggeredSendDefinitionClient = new TriggeredSendDefinitionClient(config);
             _dataExtensionClient = new DataExtensionClient(config);
             _emailTemplateClient = new EmailTemplateClient(config);
@@ -103,17 +95,7 @@ namespace ExactTarget.TriggeredEmail.Creation
 
         public void StartTriggeredSend(string externalKey)
         {
-            var ts = new TriggeredSendDefinition
-            {
-                Client = _config.ClientId.HasValue ? new ClientID { ID = _config.ClientId.Value, IDSpecified = true } : null,
-                CustomerKey = externalKey,
-                TriggeredSendStatus = TriggeredSendStatusEnum.Active,
-                TriggeredSendStatusSpecified = true
-            };
-           
-            string requestId, overallStatus;
-            var result = _client.Update(new UpdateOptions(), new APIObject[] { ts }, out requestId, out overallStatus);
-            ExactTargetResultChecker.CheckResult(result.FirstOrDefault());
+            _triggeredSendDefinitionClient.StartTriggeredSend(externalKey);
         }
     }
 }

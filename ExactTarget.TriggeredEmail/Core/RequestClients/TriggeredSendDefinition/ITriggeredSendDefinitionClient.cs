@@ -10,5 +10,7 @@
             string description);
 
         bool DoesTriggeredSendDefinitionExist(string externalKey);
+
+        void StartTriggeredSend(string externalKey);
     }
 }

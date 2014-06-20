@@ -26,21 +26,15 @@ var config = new ExactTargetConfiguration
 ```
 
 ```C#
+//the email to trigger
  var triggeredEmail = new ExactTargetTriggeredEmail("external-key-of-trigger", 
                                 "recipient@uri.test" );
 
-```
-
-Specify values for the Data Extension if any (optional)
-
-```C#
+//specify values for the Data Extension if any (optional)
 triggeredEmail.AddReplacementValue("DataExtensionFieldName1", "Value 1");
 triggeredEmail.AddReplacementValue("DataExtensionFieldName2", "Value 2");
-```
 
-Trigger the email
-
-```C#
+//trigger the email
 var emailTrigger = new EmailTrigger(config);
 emailTrigger.Trigger(triggeredEmail);
 ```
@@ -48,14 +42,14 @@ emailTrigger.Trigger(triggeredEmail);
 Creating a new Triggered Send Definition
 -----------------------------
 
-The following example will create a Triggered Send Definition,
-Data Extension with "Subject" and "Body",
-Email Template, an Email from that template
-and a Delivery Profile for the Data Extension without header and footer
-in ExactTarget.
+In only 3 lines of code you can create a TriggeredSendDefinition
+in ExactTarget that you can then use to send an unstyled HTML email (with tracking)
+to a recipient. When triggering an email you only need to supply 
+recipient address, subject, and html body content.
+
 
 ```C#
-//create and start Triggered Send
+//create and start Triggered Send (only required to do this once)
 var triggeredEmailCreator = new TriggeredEmailCreator(config);
 
 triggeredEmailCreator.Create("my-new-external-key-of-trigger");
@@ -63,6 +57,11 @@ triggeredEmailCreator.Create("my-new-external-key-of-trigger");
 triggeredEmailCreator.StartTriggeredSend("my-new-external-key-of-trigger");
 
 ```
+* The above example will create a Triggered Send Definition,
+Data Extension with "Subject" and "Body",
+Paste HTML Email Template, an Email from that template
+and a Delivery Profile for the Data Extension without header and footer
+in ExactTarget.
 
 Now you can trigger an email:
 ```C#

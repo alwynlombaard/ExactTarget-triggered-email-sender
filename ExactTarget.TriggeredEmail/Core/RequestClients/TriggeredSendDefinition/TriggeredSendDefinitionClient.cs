@@ -44,7 +44,9 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition
                 DeliveryProfile = new ExactTargetApi.DeliveryProfile
                 {
                     CustomerKey = deliveryProfileCustomerKey
-                }
+                },
+                IsWrapped = true,
+                IsWrappedSpecified = true
 
             };
             string requestId, status;
@@ -61,6 +63,20 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition
             return _sharedCoreRequestClient.DoesObjectExist("CustomerKey", externalKey, "TriggeredSendDefinition");
         }
 
+        public void StartTriggeredSend(string externalKey)
+        {
+            var ts = new ExactTargetApi.TriggeredSendDefinition
+            {
+                Client = _config.ClientId.HasValue ? new ClientID { ID = _config.ClientId.Value, IDSpecified = true } : null,
+                CustomerKey = externalKey,
+                TriggeredSendStatus = TriggeredSendStatusEnum.Active,
+                TriggeredSendStatusSpecified = true
+            };
+
+            string requestId, overallStatus;
+            var result = _client.Update(new UpdateOptions(), new APIObject[] { ts }, out requestId, out overallStatus);
+            ExactTargetResultChecker.CheckResult(result.FirstOrDefault());
+        }
         
     }
 }
