@@ -58,7 +58,7 @@ namespace ExactTarget.TriggeredEmail.TestConsole
 
         private static void Send(string externalKey)
         {
-            var triggeredEmail = new ExactTargetTriggeredEmail(externalKey, "alwyn@justgiving.com");
+            var triggeredEmail = new ExactTargetTriggeredEmail(externalKey, "recipient@test.uri");
             triggeredEmail.AddReplacementValues(new Dictionary<string, string>
                 {
                     {"Subject","Test email"}, 

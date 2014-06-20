@@ -15,6 +15,7 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition
         {
             _config = config;
             _client = SoapClientFactory.Manufacture(config);
+            _sharedCoreRequestClient = new SharedCoreRequestClient(config);
         }
 
         public int CreateTriggeredSendDefinition(

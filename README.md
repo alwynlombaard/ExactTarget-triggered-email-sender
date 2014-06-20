@@ -60,14 +60,14 @@ var triggeredEmailCreator = new TriggeredEmailCreator(config);
 
 triggeredEmailCreator.Create("my-new-external-key-of-trigger");
 
-triggeredEmailCreator.StartTriggeredSend(externalKey);
+triggeredEmailCreator.StartTriggeredSend("my-new-external-key-of-trigger");
 
 ```
 
 Now you can trigger an email:
 ```C#
 var triggeredEmail = new ExactTargetTriggeredEmail("my-new-external-key-of-trigger", 
-										"someone@temp.uri");
+										"recipient@temp.uri");
 triggeredEmail.AddReplacementValues(new Dictionary<string, string>
 	{
 		{"Subject","Test email"}, 
