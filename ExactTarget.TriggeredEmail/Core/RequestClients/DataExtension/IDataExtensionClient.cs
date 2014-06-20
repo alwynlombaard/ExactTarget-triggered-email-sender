@@ -7,7 +7,7 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.DataExtension
         void CreateDataExtension(string dataExtensionTemplateObjectId,
             string externalKey,
             string name,
-            IEnumerable<string> fields);
+            HashSet<string> fields);
 
         bool DoesDataExtensionExist(string externalKey);
         

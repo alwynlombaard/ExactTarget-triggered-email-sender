@@ -14,11 +14,7 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition
         public TriggeredSendDefinitionClient(IExactTargetConfiguration config)
         {
             _config = config;
-            _client = new SoapClient(config.SoapBinding ?? "ExactTarget.Soap", config.EndPoint);
-            if (_client.ClientCredentials == null) return;
-            _client.ClientCredentials.UserName.UserName = config.ApiUserName;
-            _client.ClientCredentials.UserName.Password = config.ApiPassword;
-            _sharedCoreRequestClient = new SharedCoreRequestClient(config);
+            _client = SoapClientFactory.Manufacture(config);
         }
 
         public int CreateTriggeredSendDefinition(

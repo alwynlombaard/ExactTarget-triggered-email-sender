@@ -22,7 +22,7 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.DataExtension
         public void CreateDataExtension(string dataExtensionTemplateObjectId,
                                            string externalKey,
                                            string name,
-                                           IEnumerable<string> fields)
+                                           HashSet<string> fields)
         {
             var de = new ExactTargetApi.DataExtension
             {
