@@ -2,6 +2,7 @@
 using ExactTarget.EmailFromTemplateCreator;
 using ExactTarget.TriggeredEmail.ExactTargetApi;
 using IExactTargetConfiguration = ExactTarget.TriggeredEmail.Core.Configuration.IExactTargetConfiguration;
+using System.Linq;
 
 namespace ExactTarget.TriggeredEmail.Core.RequestClients.Email
 {
@@ -23,7 +24,7 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.Email
         {
             _config = config;
             _client = SoapClientFactory.Manufacture(config);
-            _emailFromTemplateCreator = new EmailCreator(new EmailFromTemplateCreator.ExactTargetConfiguration
+            _emailFromTemplateCreator = new EmailCreator(new ExactTargetConfiguration
             {
                 ApiUserName = _config.ApiUserName,
                 ApiPassword = _config.ApiPassword,
@@ -36,6 +37,30 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.Email
         public int CreateEmailFromTemplate(int emailTemplateId, string emailName, string subject, KeyValuePair<string, string> contentArea)
         {
             return _emailFromTemplateCreator.Create(emailTemplateId, emailName, subject, contentArea);
+        }
+
+        public int CreateEmail(string externalKey, string emailName, string subject, string htmlBody)
+        {
+            var email = new ExactTargetApi.Email
+            {
+                Client = _config.ClientId.HasValue ? new ClientID { ID = _config.ClientId.Value, IDSpecified = true } : null,
+                Name = emailName,
+                CustomerKey = externalKey,
+                IsHTMLPaste = true,
+                IsHTMLPasteSpecified = true,
+                SyncTextWithHTML = true,
+                SyncTextWithHTMLSpecified = true,
+                HTMLBody = htmlBody,
+                Subject = subject,
+                CharacterSet = "UTF-8"
+            };
+
+            string requestId, status;
+            var result = _client.Create(new CreateOptions(), new APIObject[] { email }, out requestId, out status);
+
+            ExactTargetResultChecker.CheckResult(result.FirstOrDefault()); //we expect only one result because we've sent only one APIObject
+
+            return result.First().NewID;
         }
     }
 }

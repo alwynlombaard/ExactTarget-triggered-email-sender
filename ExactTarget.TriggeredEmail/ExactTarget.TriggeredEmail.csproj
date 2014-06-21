@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\EmailContentHelper.cs" />
     <Compile Include="Core\RequestClients\DeliveryProfile\DeliveryProfileClient.cs" />
     <Compile Include="Core\RequestClients\DeliveryProfile\IDeliveryProfileClient.cs" />
     <Compile Include="Core\SoapClientFactory.cs" />

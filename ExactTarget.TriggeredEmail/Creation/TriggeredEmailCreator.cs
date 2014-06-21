@@ -42,7 +42,51 @@ namespace ExactTarget.TriggeredEmail.Creation
 
         public int Create(string externalKey)
         {
-            
+            return CreateWithTemplate(externalKey, 
+                "<html>" +
+                "<body>" +
+                "<custom type=\"content\" name=\"dynamicArea\">" +
+                EmailContentHelper.GetOpenTrackingTag() +
+                EmailContentHelper.GetCompanyPhicialMailingAddressTags() +
+                "</body>" +
+                "</html>");
+        }
+
+        public int CreateTriggeredSendDefinitionWithEmailTemplate(string externalKey, string layoutHtmlAboveBodyTag, string layoutHtmlBelowBodyTag)
+        {
+            return CreateWithTemplate(externalKey,
+                layoutHtmlAboveBodyTag +
+                "<body>" +
+                "<custom type=\"content\" name=\"dynamicArea\">" +
+                EmailContentHelper.GetOpenTrackingTag() +
+                EmailContentHelper.GetCompanyPhicialMailingAddressTags() + 
+                "</body>" +
+                layoutHtmlBelowBodyTag);
+        }
+
+        public int CreateTriggeredSendDefinitionWithPasteHtml(string externalKey)
+        {
+            return CreateWithoutTemplate(externalKey);
+        }
+
+        public void StartTriggeredSend(string externalKey)
+        {
+            _triggeredSendDefinitionClient.StartTriggeredSend(externalKey);
+        }
+
+        private int CreateWithTemplate(string externalKey, string layoutHtml)
+        {
+            return Create(externalKey, layoutHtml);
+        }
+
+        private int CreateWithoutTemplate(string externalKey)
+        {
+            return Create(externalKey,null);
+        }
+
+        private int Create(string externalKey, string layoutHtml)
+        {
+            var isTemplated = !string.IsNullOrWhiteSpace(layoutHtml);
             if (externalKey.Length > Guid.Empty.ToString().Length)
             {
                 throw new ArgumentException("externalKey too long, should be max length of " + Guid.Empty.ToString().Length, "externalKey");
@@ -58,44 +102,61 @@ namespace ExactTarget.TriggeredEmail.Creation
             {
                 var dataExtensionTemplateObjectId = _dataExtensionClient.RetrieveTriggeredSendDataExtensionTemplateObjectId();
                 var dataExtensionFieldNames = new HashSet<string> { "Subject", "Body" };
-                _dataExtensionClient.CreateDataExtension(dataExtensionTemplateObjectId, 
-                                    dataExtensionExternalKey, 
-                                    "triggeredsend-" + externalKey, 
+                if (!isTemplated)
+                {
+                    dataExtensionFieldNames.Add("Head");
+                }
+
+                _dataExtensionClient.CreateDataExtension(dataExtensionTemplateObjectId,
+                                    dataExtensionExternalKey,
+                                    "triggeredsend-" + externalKey,
                                     dataExtensionFieldNames);
-                
+
             }
 
-            var emailTempalteExternalKey = ExternalKeyGenerator.GenerateExternalKey("email-template" + externalKey);
-            var emailTemplateId = _emailTemplateClient.RetrieveEmailTemplateId(emailTempalteExternalKey);
-            if (emailTemplateId == 0)
-            {
-                emailTemplateId = _emailTemplateClient.CreateEmailTemplate(emailTempalteExternalKey,
-                                "template-" + externalKey,
-                                "<body><custom type=\"content\" name=\"dynamicArea\"><custom name=\"opencounter\" type=\"tracking\">" +
-                                "<table cellpadding=\"2\" cellspacing=\"0\" width=\"600\" ID=\"Table5\" Border=\"0\"><tr><td><font face=\"verdana\" size=\"1\" color=\"#444444\">This email was sent by: <b>%%Member_Busname%%</b><br>%%Member_Addr%% %%Member_City%%, %%Member_State%%, %%Member_PostalCode%%, %%Member_Country%%<br><br></font></td></tr></table>" + 
-                                "</body>");
-            }
 
+            int emailId;
             var emailName = "email-" + externalKey;
-            var emailId = _emailRequestClient.CreateEmailFromTemplate(emailTemplateId,
+            var emailExternalKey = ExternalKeyGenerator.GenerateExternalKey("email-" + externalKey);
+            if (isTemplated)
+            {
+                var emailTempalteExternalKey = ExternalKeyGenerator.GenerateExternalKey("email-template" + externalKey);
+                var emailTemplateId = _emailTemplateClient.RetrieveEmailTemplateId(emailTempalteExternalKey);
+                if (emailTemplateId == 0)
+                {
+                    emailTemplateId = _emailTemplateClient.CreateEmailTemplate(emailTempalteExternalKey,
+                        "template-" + externalKey,
+                        layoutHtml);
+                }
+
+                emailId = _emailRequestClient.CreateEmailFromTemplate(emailTemplateId,
                     emailName,
                     "%%Subject%%",
                     new KeyValuePair<string, string>("dynamicArea", "%%Body%%"));
+            }
+            else
+            {
+                emailId = _emailRequestClient.CreateEmail(emailExternalKey, emailName, "%%Subject%%",
+                    "<html>" +
+                    "<head>%%Head%%</head>" +
+                    "%%Body%%" +
+                    EmailContentHelper.GetOpenTrackingTag() +
+                    EmailContentHelper.GetCompanyPhicialMailingAddressTags() +
+                    "</html>");
+            }
 
+            
             var deliveryProfileExternalKey = ExternalKeyGenerator.GenerateExternalKey("blank-delivery-profile");
             _deliveryProfileClient.TryCreateBlankDeliveryProfile(deliveryProfileExternalKey);
- 
+
             return _triggeredSendDefinitionClient.CreateTriggeredSendDefinition(externalKey,
                                                                                 emailId,
                                                                                 dataExtensionExternalKey,
                                                                                 deliveryProfileExternalKey,
                                                                                 externalKey,
                                                                                 externalKey);
-        }
 
-        public void StartTriggeredSend(string externalKey)
-        {
-            _triggeredSendDefinitionClient.StartTriggeredSend(externalKey);
+            
         }
     }
 }

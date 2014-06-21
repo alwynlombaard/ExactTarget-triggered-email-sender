@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using ExactTarget.TriggeredEmail.Core.Configuration;
 using ExactTarget.TriggeredEmail.Creation;
 using ExactTarget.TriggeredEmail.Trigger;
@@ -10,7 +9,7 @@ namespace ExactTarget.TriggeredEmail.TestConsole
     {
         public static void Main()
         {
-            const string externalKey = "my-test-external-key-5";
+            const string externalKey = "my-test-external-key";
             try
             {
                 CreateTriggeredSend(externalKey);
@@ -45,7 +44,7 @@ namespace ExactTarget.TriggeredEmail.TestConsole
         private static void CreateTriggeredSend(string externalKey)
         {
             var triggeredEmailCreator = new TriggeredEmailCreator(GetConfig());
-            triggeredEmailCreator.Create(externalKey);
+            triggeredEmailCreator.CreateTriggeredSendDefinitionWithEmailTemplate(externalKey, "<html><head><style>.red{color:red}</style></head>", "</html>");
             Console.WriteLine("Completed creating triggered send");
         }
 
@@ -58,12 +57,10 @@ namespace ExactTarget.TriggeredEmail.TestConsole
 
         private static void Send(string externalKey)
         {
-            var triggeredEmail = new ExactTargetTriggeredEmail(externalKey, "recipient@test.uri");
-            triggeredEmail.AddReplacementValues(new Dictionary<string, string>
-                {
-                    {"Subject","Test email"}, 
-                    {"Body","<h2>Test email heading</h2><p>Test paragraph</p>"}
-                });
+            var triggeredEmail = new ExactTargetTriggeredEmail(externalKey, "alwyn@test.uri");
+            triggeredEmail.AddReplacementValue("Subject","Test email")
+                            .AddReplacementValue("Body","<h2>Test email heading</h2><p>Test paragraph</p><p class='red'>This is some text in red</p>");
+                            //.AddReplacementValue("Head", "<style>.red{color:red}</style>");
 
             var emailTrigger = new EmailTrigger(GetConfig());
             emailTrigger.Trigger(triggeredEmail);
