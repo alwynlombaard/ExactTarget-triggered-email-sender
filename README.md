@@ -64,11 +64,11 @@ Now you can trigger an email:
 ```C#
 var triggeredEmail = new ExactTargetTriggeredEmail("new-external-key", 
 										"recipient@temp.uri");
-triggeredEmail.AddReplacementValue("Subject","Test email")
+triggeredEmail.AddReplacementValue("Subject","Test email");
 triggeredEmail.AddReplacementValue("Body",
 	"<p>Test paragraph</p>" +
 	"<p class='red'>This is some text in red</p>");
-triggeredEmail.AddReplacementValue("Head","<style>.red{color:red}</style>")
+triggeredEmail.AddReplacementValue("Head","<style>.red{color:red}</style>");
 
 
 var emailTrigger = new EmailTrigger(config);
@@ -104,7 +104,7 @@ Now you can trigger an email:
 ```C#
 var triggeredEmail = new ExactTargetTriggeredEmail("new-external-key", 
 										"recipient@temp.uri");
-triggeredEmail.AddReplacementValue("Subject","Test email")
+triggeredEmail.AddReplacementValue("Subject","Test email");
 triggeredEmail.AddReplacementValue("Body", 
 	"<p>Test paragraph</p><p class='red'>This is some text in red</p>");
 
