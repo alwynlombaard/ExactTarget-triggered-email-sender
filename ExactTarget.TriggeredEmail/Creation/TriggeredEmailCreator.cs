@@ -45,9 +45,9 @@ namespace ExactTarget.TriggeredEmail.Creation
             return CreateWithTemplate(externalKey, 
                 "<html>" +
                 "<body>" +
-                "<custom type=\"content\" name=\"dynamicArea\">" +
+                EmailContentHelper.GetContentAreaTag("dynamicArea") +
                 EmailContentHelper.GetOpenTrackingTag() +
-                EmailContentHelper.GetCompanyPhicialMailingAddressTags() +
+                EmailContentHelper.GetCompanyPhysicalMailingAddressTags() +
                 "</body>" +
                 "</html>");
         }
@@ -57,9 +57,9 @@ namespace ExactTarget.TriggeredEmail.Creation
             return CreateWithTemplate(externalKey,
                 layoutHtmlAboveBodyTag +
                 "<body>" +
-                "<custom type=\"content\" name=\"dynamicArea\">" +
+                EmailContentHelper.GetContentAreaTag("dynamicArea") +
                 EmailContentHelper.GetOpenTrackingTag() +
-                EmailContentHelper.GetCompanyPhicialMailingAddressTags() + 
+                EmailContentHelper.GetCompanyPhysicalMailingAddressTags() + 
                 "</body>" +
                 layoutHtmlBelowBodyTag);
         }
@@ -141,7 +141,7 @@ namespace ExactTarget.TriggeredEmail.Creation
                     "<head>%%Head%%</head>" +
                     "%%Body%%" +
                     EmailContentHelper.GetOpenTrackingTag() +
-                    EmailContentHelper.GetCompanyPhicialMailingAddressTags() +
+                    EmailContentHelper.GetCompanyPhysicalMailingAddressTags() +
                     "</html>");
             }
 

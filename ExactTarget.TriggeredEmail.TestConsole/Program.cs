@@ -9,16 +9,24 @@ namespace ExactTarget.TriggeredEmail.TestConsole
     {
         public static void Main()
         {
-            const string externalKey = "my-test-external-key";
+
+            TestWithPasteHtml(Guid.NewGuid().ToString());
+            TestWithTemplate(Guid.NewGuid().ToString());
+            Console.WriteLine("Done");
+            Console.ReadKey();
+        }
+
+        private static void TestWithPasteHtml(string externalKey)
+        {
             try
             {
-                CreateTriggeredSend(externalKey);
+                CreateTriggeredSendWithPasteHtml(externalKey);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
-            
+
             try
             {
                 StartTriggeredSend(externalKey);
@@ -27,24 +35,61 @@ namespace ExactTarget.TriggeredEmail.TestConsole
             {
                 Console.WriteLine(ex);
             }
-            
+
             try
             {
                 Send(externalKey);
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Failed for Paste Html");
+                Console.WriteLine(ex);
+            }
+        }
+
+
+        private static void TestWithTemplate(string externalKey)
+        {
+            try
+            {
+                CreateTriggeredSendWithTemplate(externalKey);
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex);
             }
 
+            try
+            {
+                StartTriggeredSend(externalKey);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
 
-            Console.ReadKey();
+            try
+            {
+                Send(externalKey);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed for Template");
+                Console.WriteLine(ex);
+            }
         }
 
-        private static void CreateTriggeredSend(string externalKey)
+        private static void CreateTriggeredSendWithTemplate(string externalKey)
         {
             var triggeredEmailCreator = new TriggeredEmailCreator(GetConfig());
             triggeredEmailCreator.CreateTriggeredSendDefinitionWithEmailTemplate(externalKey, "<html><head><style>.red{color:red}</style></head>", "</html>");
+            Console.WriteLine("Completed creating triggered send");
+        }
+
+        private static void CreateTriggeredSendWithPasteHtml(string externalKey)
+        {
+            var triggeredEmailCreator = new TriggeredEmailCreator(GetConfig());
+            triggeredEmailCreator.CreateTriggeredSendDefinitionWithPasteHtml(externalKey);
             Console.WriteLine("Completed creating triggered send");
         }
 
@@ -59,8 +104,8 @@ namespace ExactTarget.TriggeredEmail.TestConsole
         {
             var triggeredEmail = new ExactTargetTriggeredEmail(externalKey, "alwyn@test.uri");
             triggeredEmail.AddReplacementValue("Subject","Test email")
-                            .AddReplacementValue("Body","<h2>Test email heading</h2><p>Test paragraph</p><p class='red'>This is some text in red</p>");
-                            //.AddReplacementValue("Head", "<style>.red{color:red}</style>");
+                            .AddReplacementValue("Body","<h2>Test email heading</h2><p>Test paragraph</p><p class='red'>This is some text in red</p>")
+                            .AddReplacementValue("Head", "<style>.red{color:red}</style>");
 
             var emailTrigger = new EmailTrigger(GetConfig());
             emailTrigger.Trigger(triggeredEmail);
