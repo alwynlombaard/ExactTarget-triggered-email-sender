@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Exacttarget triggered email sender by alwynlombaard</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Exacttarget triggered email sender</h1>
+        <h2>Simplifies creating and sending triggered emails in ExactTarget using the ExactTarget API.</h2>
+        <a href="https://github.com/alwynlombaard/ExactTarget-triggered-email-sender" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="exacttarget-triggered-email-sender" class="anchor" href="#exacttarget-triggered-email-sender"><span class="octicon octicon-link"></span></a>ExactTarget triggered email sender</h1>
+
+<p>This library simplifies the creation and triggering of an ExactTarget "TriggeredSendDefinition" via the ExactTarget API. </p>
+
+<p>Get it from Nuget:</p>
+
+<pre><code>PM&gt; Install-Package ExactTarget.TriggerEmailSender
+</code></pre>
+
+<h2>
+<a name="triggering-an-email-" class="anchor" href="#triggering-an-email-"><span class="octicon octicon-link"></span></a>Triggering an email </h2>
+
+<div class="highlight highlight-C#"><pre><span class="c1">//create configuration</span>
+<span class="kt">var</span> <span class="n">config</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ExactTargetConfiguration</span>
+<span class="p">{</span>
+    <span class="n">ApiUserName</span> <span class="p">=</span> <span class="s">"API_User"</span><span class="p">,</span>
+    <span class="n">ApiPassword</span> <span class="p">=</span> <span class="s">"API_Password"</span><span class="p">,</span>
+    <span class="c1">//use your endpoint given to you by ET</span>
+    <span class="n">EndPoint</span> <span class="p">=</span> <span class="s">"https://webservice.s6.exacttarget.com/Service.asmx"</span><span class="p">,</span>
+    <span class="n">ClientId</span> <span class="p">=</span> <span class="m">6269485</span><span class="p">,</span><span class="c1">//optional business unit id</span>
+<span class="p">};</span>
+<span class="c1">//above code is only for demonstration purposes</span>
+<span class="c1">//ideally you would want to load your configuration from a configuration file       </span>
+</pre></div>
+
+<div class="highlight highlight-C#"><pre><span class="c1">//the email to trigger</span>
+ <span class="kt">var</span> <span class="n">triggeredEmail</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ExactTargetTriggeredEmail</span><span class="p">(</span><span class="s">"external-key-of-trigger"</span><span class="p">,</span> 
+                                <span class="s">"recipient@uri.test"</span> <span class="p">);</span>
+
+<span class="c1">//specify values for the Data Extension if any (optional)</span>
+<span class="n">triggeredEmail</span><span class="p">.</span><span class="n">AddReplacementValue</span><span class="p">(</span><span class="s">"DataExtensionFieldName1"</span><span class="p">,</span> <span class="s">"Value 1"</span><span class="p">);</span>
+<span class="n">triggeredEmail</span><span class="p">.</span><span class="n">AddReplacementValue</span><span class="p">(</span><span class="s">"DataExtensionFieldName2"</span><span class="p">,</span> <span class="s">"Value 2"</span><span class="p">);</span>
+
+<span class="c1">//trigger the email</span>
+<span class="kt">var</span> <span class="n">emailTrigger</span> <span class="p">=</span> <span class="k">new</span> <span class="n">EmailTrigger</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+<span class="n">emailTrigger</span><span class="p">.</span><span class="n">Trigger</span><span class="p">(</span><span class="n">triggeredEmail</span><span class="p">);</span>
+</pre></div>
+
+<h2>
+<a name="creating-a-new-triggered-send-definition-with-a-paste-html-email-in-exacttarget" class="anchor" href="#creating-a-new-triggered-send-definition-with-a-paste-html-email-in-exacttarget"><span class="octicon octicon-link"></span></a>Creating a new Triggered Send Definition with a "Paste HTML" email in ExactTarget</h2>
+
+<p>In only 3 lines of code you can create a TriggeredSendDefinition
+in ExactTarget that you can then use to send an HTML email (with tracking)
+to a recipient. When triggering an email you only need to supply 
+recipient address, subject, html body and optionally html head content.</p>
+
+<div class="highlight highlight-C#"><pre><span class="c1">//create and start Triggered Send (only required to do this once)</span>
+<span class="kt">var</span> <span class="n">triggeredEmailCreator</span> <span class="p">=</span> <span class="k">new</span> <span class="n">TriggeredEmailCreator</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+
+<span class="n">triggeredEmailCreator</span><span class="p">.</span><span class="n">CreateTriggeredSendDefinitionWithPasteHtml</span><span class="p">(</span><span class="s">"new-external-key"</span><span class="p">);</span>
+
+<span class="n">triggeredEmailCreator</span><span class="p">.</span><span class="n">StartTriggeredSend</span><span class="p">(</span><span class="s">"new-external-key"</span><span class="p">);</span>
+</pre></div>
+
+<ul>
+<li>The above example will create a Triggered Send Definition,
+Data Extension with "Subject" and "Body" and "Head", Paste HTML Email
+and a Delivery Profile for the Data Extension without header and footer
+in ExactTarget.</li>
+</ul><p>Now you can trigger an email:</p>
+
+<div class="highlight highlight-C#"><pre><span class="kt">var</span> <span class="n">triggeredEmail</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ExactTargetTriggeredEmail</span><span class="p">(</span><span class="s">"new-external-key"</span><span class="p">,</span> 
+                                        <span class="s">"recipient@temp.uri"</span><span class="p">);</span>
+<span class="n">triggeredEmail</span><span class="p">.</span><span class="n">AddReplacementValue</span><span class="p">(</span><span class="s">"Subject"</span><span class="p">,</span><span class="s">"Test email"</span><span class="p">);</span>
+<span class="n">triggeredEmail</span><span class="p">.</span><span class="n">AddReplacementValue</span><span class="p">(</span><span class="s">"Body"</span><span class="p">,</span>
+    <span class="s">"&lt;p&gt;Test paragraph&lt;/p&gt;"</span> <span class="p">+</span>
+    <span class="s">"&lt;p class='red'&gt;This is some text in red&lt;/p&gt;"</span><span class="p">);</span>
+<span class="n">triggeredEmail</span><span class="p">.</span><span class="n">AddReplacementValue</span><span class="p">(</span><span class="s">"Head"</span><span class="p">,</span><span class="s">"&lt;style&gt;.red{color:red}&lt;/style&gt;"</span><span class="p">);</span>
+
+
+<span class="kt">var</span> <span class="n">emailTrigger</span> <span class="p">=</span> <span class="k">new</span> <span class="n">EmailTrigger</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+<span class="n">emailTrigger</span><span class="p">.</span><span class="n">Trigger</span><span class="p">(</span><span class="n">triggeredEmail</span><span class="p">);</span>
+</pre></div>
+
+<h2>
+<a name="creating-a-new-triggered-send-definition-with-an-email-template-in-exacttarget" class="anchor" href="#creating-a-new-triggered-send-definition-with-an-email-template-in-exacttarget"><span class="octicon octicon-link"></span></a>Creating a new Triggered Send Definition with an email template in ExactTarget</h2>
+
+<p>In only 3 lines of code you can create a TriggeredSendDefinition
+in ExactTarget that you can then use to send an HTML email (with tracking)
+to a recipient. When triggering an email you only need to supply 
+recipient address, subject, and html body content.</p>
+
+<div class="highlight highlight-C#"><pre><span class="c1">//create and start Triggered Send (only required to do this once)</span>
+<span class="kt">var</span> <span class="n">triggeredEmailCreator</span> <span class="p">=</span> <span class="k">new</span> <span class="n">TriggeredEmailCreator</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+
+<span class="n">triggeredEmailCreator</span><span class="p">.</span><span class="n">CreateTriggeredSendDefinitionWithEmailTemplate</span><span class="p">(</span>
+                        <span class="s">"new-external-key"</span><span class="p">,</span>
+                        <span class="s">"&lt;html&gt;&lt;head&gt;&lt;style&gt;.red{color:red}&lt;/style&gt;&lt;/head&gt;"</span><span class="p">,</span> 
+                        <span class="s">"&lt;/html&gt;"</span><span class="p">);</span>
+
+<span class="n">triggeredEmailCreator</span><span class="p">.</span><span class="n">StartTriggeredSend</span><span class="p">(</span><span class="s">"new-external-key"</span><span class="p">);</span>
+</pre></div>
+
+<ul>
+<li>The above example will create a Triggered Send Definition,
+Data Extension with "Subject" and "Body",
+Paste HTML Email Template, an Email from that template
+and a Delivery Profile for the Data Extension without header and footer
+in ExactTarget.</li>
+</ul><p>Now you can trigger an email:</p>
+
+<div class="highlight highlight-C#"><pre><span class="kt">var</span> <span class="n">triggeredEmail</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ExactTargetTriggeredEmail</span><span class="p">(</span><span class="s">"new-external-key"</span><span class="p">,</span> 
+                                        <span class="s">"recipient@temp.uri"</span><span class="p">);</span>
+<span class="n">triggeredEmail</span><span class="p">.</span><span class="n">AddReplacementValue</span><span class="p">(</span><span class="s">"Subject"</span><span class="p">,</span><span class="s">"Test email"</span><span class="p">);</span>
+<span class="n">triggeredEmail</span><span class="p">.</span><span class="n">AddReplacementValue</span><span class="p">(</span><span class="s">"Body"</span><span class="p">,</span> 
+    <span class="s">"&lt;p&gt;Test paragraph&lt;/p&gt;&lt;p class='red'&gt;This is some text in red&lt;/p&gt;"</span><span class="p">);</span>
+
+<span class="kt">var</span> <span class="n">emailTrigger</span> <span class="p">=</span> <span class="k">new</span> <span class="n">EmailTrigger</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+<span class="n">emailTrigger</span><span class="p">.</span><span class="n">Trigger</span><span class="p">(</span><span class="n">triggeredEmail</span><span class="p">);</span>
+</pre></div>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/alwynlombaard/ExactTarget-triggered-email-sender/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/alwynlombaard/ExactTarget-triggered-email-sender/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/alwynlombaard/ExactTarget-triggered-email-sender"></a> is maintained by <a href="https://github.com/alwynlombaard">alwynlombaard</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
