@@ -76,23 +76,7 @@ namespace ExactTarget.TriggeredEmail.Trigger
                 new APIObject[] { ts },
                 out requestId, out status);
 
-            CheckResult(result.FirstOrDefault()); //we expect only one result because we've sent only one APIObject
-        }
-
-        private static void CheckResult(Result result)
-        {
-            if (result == null)
-            {
-                throw new Exception("Received an unexpected null result from ExactTarget");
-            }
-
-            if (result != null 
-                && !result.StatusCode.Equals("OK", StringComparison.InvariantCultureIgnoreCase))
-            {
-                    throw new Exception(string.Format("ExactTarget response indicates failure. StatusCode:{0} StatusMessage:{1}",
-                                            result.StatusCode,
-                                            result.StatusMessage));
-            }
+            ExactTargetResultChecker.CheckResult(result.FirstOrDefault()); //we expect only one result because we've sent only one APIObject
         }
     }
 }

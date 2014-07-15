@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExactTarget.TriggeredEmail"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExactTarget.TriggeredEmail.TestConsole", "..\ExactTarget.TriggeredEmail.TestConsole\ExactTarget.TriggeredEmail.TestConsole.csproj", "{D586F3D8-34BB-4B0E-8624-87E1B8623C38}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExactTarget.TriggeredEmail.Test.Unit", "..\ExactTarget.TriggeredEmail.Test.Unit\ExactTarget.TriggeredEmail.Test.Unit.csproj", "{697A8607-0906-453F-821A-76A77AE635A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{D586F3D8-34BB-4B0E-8624-87E1B8623C38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D586F3D8-34BB-4B0E-8624-87E1B8623C38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D586F3D8-34BB-4B0E-8624-87E1B8623C38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{697A8607-0906-453F-821A-76A77AE635A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{697A8607-0906-453F-821A-76A77AE635A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{697A8607-0906-453F-821A-76A77AE635A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{697A8607-0906-453F-821A-76A77AE635A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
