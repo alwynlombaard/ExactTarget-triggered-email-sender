@@ -32,26 +32,37 @@ namespace ExactTarget.TriggeredEmail.Trigger
         public void Trigger(ExactTargetTriggeredEmail exactTargetTriggeredEmail, RequestQueueing requestQueueing = RequestQueueing.No, Priority priority = Priority.Normal)
         {
             var clientId = _config.ClientId;
-            var client =  SoapClientFactory.Manufacture(_config);
+            var client = SoapClientFactory.Manufacture(_config);
 
-            var subscribers = new List<Subscriber>
+            var subscriber = new Subscriber
+            {
+                EmailAddress = exactTargetTriggeredEmail.EmailAddress,
+                SubscriberKey = exactTargetTriggeredEmail.SubscriberKey ?? exactTargetTriggeredEmail.EmailAddress,
+                Attributes =
+                    exactTargetTriggeredEmail.ReplacementValues.Select(value => new Attribute
+                    {
+                        Name = value.Key,
+                        Value = value.Value
+                    }).ToArray()
+            };
+
+            // Add sender information if specified. This will send the email with FromAddress in the sender field.
+            // Official doco here under the section "Determining the From Information at Send Time":
+            // https://help.exacttarget.com/en/technical_library/web_service_guide/triggered_email_scenario_guide_for_developers/#Determining_the_From_Information_at_Send_Time
+            if (!string.IsNullOrEmpty(exactTargetTriggeredEmail.FromAddress) && !string.IsNullOrEmpty(exactTargetTriggeredEmail.FromName))
+            {
+                subscriber.Owner = new Owner()
                 {
-                    new Subscriber
-                        {
-                            EmailAddress = exactTargetTriggeredEmail.EmailAddress,
-                            SubscriberKey = exactTargetTriggeredEmail.SubscriberKey ?? exactTargetTriggeredEmail.EmailAddress,
-                            Attributes =
-                                exactTargetTriggeredEmail.ReplacementValues.Select(value => new Attribute
-                                    {
-                                        Name = value.Key,
-                                        Value = value.Value
-                                    }).ToArray()
-                        }
+                    FromAddress = exactTargetTriggeredEmail.FromAddress,
+                    FromName = exactTargetTriggeredEmail.FromName
                 };
+            }
+
+            var subscribers = new List<Subscriber> { subscriber };
 
             var tsd = new TriggeredSendDefinition
             {
-                Client = clientId.HasValue ?  new ClientID { ID = clientId.Value, IDSpecified = true } : null,
+                Client = clientId.HasValue ? new ClientID { ID = clientId.Value, IDSpecified = true } : null,
                 CustomerKey = exactTargetTriggeredEmail.ExternalKey
             };
 
