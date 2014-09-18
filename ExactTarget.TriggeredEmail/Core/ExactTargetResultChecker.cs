@@ -18,7 +18,7 @@ namespace ExactTarget.TriggeredEmail.Core
                 return;
             }
             var triggeredResult = result as TriggeredSendCreateResult;
-            var subscriberFailures = triggeredResult == null
+            var subscriberFailures = triggeredResult == null || triggeredResult.SubscriberFailures == null
                 ? Enumerable.Empty<string>()
                 : triggeredResult.SubscriberFailures.Select(f => " ErrorCode:" + f.ErrorCode + " ErrorDescription:" + f.ErrorDescription);
 
