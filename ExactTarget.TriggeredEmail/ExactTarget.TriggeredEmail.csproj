@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\EmailContentHelper.cs" />
+    <Compile Include="Core\Exceptions\ExactTargetException.cs" />
+    <Compile Include="Core\Exceptions\SubscriberExcludedException.cs" />
     <Compile Include="Core\RequestClients\DeliveryProfile\DeliveryProfileClient.cs" />
     <Compile Include="Core\RequestClients\DeliveryProfile\IDeliveryProfileClient.cs" />
     <Compile Include="Core\SoapClientFactory.cs" />
