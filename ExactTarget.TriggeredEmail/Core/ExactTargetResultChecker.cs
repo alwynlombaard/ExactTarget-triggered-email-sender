@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using ExactTarget.TriggeredEmail.Core.Exceptions;
 using ExactTarget.TriggeredEmail.ExactTargetApi;
 
 namespace ExactTarget.TriggeredEmail.Core
@@ -17,15 +18,30 @@ namespace ExactTarget.TriggeredEmail.Core
             {
                 return;
             }
+
             var triggeredResult = result as TriggeredSendCreateResult;
             var subscriberFailures = triggeredResult == null || triggeredResult.SubscriberFailures == null
-                ? Enumerable.Empty<string>()
-                : triggeredResult.SubscriberFailures.Select(f => " ErrorCode:" + f.ErrorCode + " ErrorDescription:" + f.ErrorDescription);
+                ? new SubscriberResult[0]
+                : triggeredResult.SubscriberFailures;
 
-            throw new Exception(string.Format("ExactTarget response indicates failure. StatusCode:{0} StatusMessage:{1} SubscriberFailures:{2}",
-                result.StatusCode,
-                result.StatusMessage,
-                string.Join("|", subscriberFailures)));
+            var subscriberFailureMessages = subscriberFailures.Select(f => " ErrorCode:" + f.ErrorCode + " ErrorDescription:" + f.ErrorDescription);
+            var exceptionMessage = string.Format("ExactTarget response indicates failure. StatusCode:{0} StatusMessage:{1} SubscriberFailures:{2}",
+            result.StatusCode,
+            result.StatusMessage,
+            string.Join("|", subscriberFailureMessages));
+
+            /* Error code 24 - List Detective Exclusion: The subscriber was excluded by List Detective.
+             * This is a common error code returned by ExactTarget when the recipient is invalid.
+             * See https://help.exacttarget.com/en/documentation/exacttarget/content/email_messages/email_send_error_codes/
+             */
+            const int listDetectiveExclusionErrorCode = 24;
+            if (subscriberFailures.Length == 1 && subscriberFailures[0].ErrorCode == listDetectiveExclusionErrorCode.ToString())
+            {
+                var subscriberEmailAddress = subscriberFailures[0].Subscriber == null ? null : subscriberFailures[0].Subscriber.EmailAddress;
+                throw new SubscriberExcludedException(subscriberEmailAddress, exceptionMessage);
+            }
+            
+            throw new ExactTargetException(exceptionMessage);
         }
     }
 }
