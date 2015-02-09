@@ -65,6 +65,7 @@
     <Compile Include="Core\RequestClients\TriggeredSendDefinition\ITriggeredSendDefinitionClient.cs" />
     <Compile Include="Core\RequestClients\TriggeredSendDefinition\TriggeredSendDefinitionClient.cs" />
     <Compile Include="Creation\DynamicTriggeredEmailCreator.cs" />
+    <Compile Include="Creation\IDynamicTriggeredEmailCreator.cs" />
     <Compile Include="Creation\ITriggeredEmailCreator.cs" />
     <Compile Include="Creation\TriggeredEmailCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Trigger\EmailTrigger.cs" />
     <Compile Include="Trigger\ExactTargetTriggeredEmail.cs" />
     <Compile Include="Trigger\IEmailTrigger.cs" />
+    <Compile Include="Trigger\Priority.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

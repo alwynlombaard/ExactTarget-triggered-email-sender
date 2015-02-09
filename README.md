@@ -79,23 +79,23 @@ Creating a new Triggered Send Definition with an email template in ExactTarget
 ------------------------------------------------------------------------------
 
 In only 3 lines of code you can create a TriggeredSendDefinition
-in ExactTarget that you can then use to send an HTML email (with tracking)
+in ExactTarget that you can then use to send an HTML email (with tracking) containing placeholder values
 to a recipient. When triggering an email you only need to supply 
-recipient address, subject, and html body content.
+recipient address, subject, and the replacement values you specified in your layout Html.
 
 ```C#
 //create and start Triggered Send (only required to do this once)
 var triggeredEmailCreator = new TriggeredEmailCreator(config);
 
-triggeredEmailCreator.CreateTriggeredSendDefinitionWithEmailTemplate(
+triggeredEmailCreator.Create(
 						"new-external-key",
-						"<html><head><style>.red{color:red}</style></head>", 
-						"</html>");
+						"<html><head><style>.green{color:green}</style></head><body>Hello %%FirstName%%,   <p class='green'>Green Content: %%MyOwnValue%% ...</p><body><html>");
 
 triggeredEmailCreator.StartTriggeredSend("new-external-key");
 ```
 * The above example will create a Triggered Send Definition,
-Data Extension with "Subject" and "Body",
+Data Extension with "Subject" and replacement values you specified in
+you layout (FirstName, MyOwnValue),
 Paste HTML Email Template, an Email from that template
 and a Delivery Profile for the Data Extension without header and footer
 in ExactTarget.
@@ -105,8 +105,8 @@ Now you can trigger an email:
 var triggeredEmail = new ExactTargetTriggeredEmail("new-external-key", 
 										"recipient@temp.uri");
 triggeredEmail.AddReplacementValue("Subject","Test email");
-triggeredEmail.AddReplacementValue("Body", 
-	"<p>Test paragraph</p><p class='red'>This is some text in red</p>");
+triggeredEmail.AddReplacementValue("FirstName","John");
+triggeredEmail.AddReplacementValue("MyOwnValue","Some test copy here...");
 
 var emailTrigger = new EmailTrigger(config);
 emailTrigger.Trigger(triggeredEmail);

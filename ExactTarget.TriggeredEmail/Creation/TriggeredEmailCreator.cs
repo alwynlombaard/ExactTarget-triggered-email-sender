@@ -7,6 +7,7 @@ using ExactTarget.TriggeredEmail.Core.RequestClients.DeliveryProfile;
 using ExactTarget.TriggeredEmail.Core.RequestClients.Email;
 using ExactTarget.TriggeredEmail.Core.RequestClients.EmailTemplate;
 using ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition;
+using ExactTarget.TriggeredEmail.Trigger;
 
 namespace ExactTarget.TriggeredEmail.Creation
 {
@@ -17,30 +18,42 @@ namespace ExactTarget.TriggeredEmail.Creation
         private readonly IEmailTemplateClient _emailTemplateClient;
         private readonly IEmailRequestClient _emailRequestClient;
         private readonly IDeliveryProfileClient _deliveryProfileClient;
+        private readonly IDynamicTriggeredEmailCreator _dynamicTriggeredEmailCreator;
 
         public TriggeredEmailCreator(IDataExtensionClient dataExtensionClient,
             ITriggeredSendDefinitionClient triggeredSendDefinitionClient,
             IEmailTemplateClient emailTemplateClient,
             IEmailRequestClient emailRequestClient,
-            IDeliveryProfileClient deliveryProfileClient)
+            IDeliveryProfileClient deliveryProfileClient,
+            IDynamicTriggeredEmailCreator dynamicTriggeredEmailCreator)
         {
             _dataExtensionClient = dataExtensionClient;
             _triggeredSendDefinitionClient = triggeredSendDefinitionClient;
             _emailTemplateClient = emailTemplateClient;
             _emailRequestClient = emailRequestClient;
             _deliveryProfileClient = deliveryProfileClient;
+            _dynamicTriggeredEmailCreator = dynamicTriggeredEmailCreator;
         }
 
         public TriggeredEmailCreator(IExactTargetConfiguration config)
+            : this(new DataExtensionClient(config),
+                new TriggeredSendDefinitionClient(config),
+                new EmailTemplateClient(config),
+                new EmailRequestClient(config),
+                new DeliveryProfileClient(config),
+                new DynamicTriggeredEmailCreator(config))
         {
-            _triggeredSendDefinitionClient = new TriggeredSendDefinitionClient(config);
-            _dataExtensionClient = new DataExtensionClient(config);
-            _emailTemplateClient = new EmailTemplateClient(config);
-            _emailRequestClient = new EmailRequestClient(config);
-            _deliveryProfileClient = new DeliveryProfileClient(config);
+           
         }
 
-        public int Create(string externalKey)
+        /// <summary>
+        /// <para>Creates a Triggered Send Definition with an email template containing a content area.</para>
+        /// <para>Use this if you want to edit the email markup in the ET UI.  </para>
+        /// </summary>
+        /// <param name="externalKey"></param>
+        /// <param name="priority"></param>
+        /// <returns></returns>
+        public int Create(string externalKey, Priority priority = Priority.Medium)
         {
             return CreateWithTemplate(externalKey, 
                 "<html>" +
@@ -49,10 +62,27 @@ namespace ExactTarget.TriggeredEmail.Creation
                 EmailContentHelper.GetOpenTrackingTag() +
                 EmailContentHelper.GetCompanyPhysicalMailingAddressTags() +
                 "</body>" +
-                "</html>");
+                "</html>",
+                priority);
         }
 
-        public int CreateTriggeredSendDefinitionWithEmailTemplate(string externalKey, string layoutHtmlAboveBodyTag, string layoutHtmlBelowBodyTag)
+        /// <summary>
+        /// <para>Creates a Triggered Send Definition with an email template containing the supplied mark up.</para>
+        /// <para>Use this if you do not wish to log in to ET UI to edit the email markup.</para>
+        /// <para>Replacement values in layoutHtml (for example %%FirstName%% or %%myOwnVariableName%% ) 
+        /// will be parsed and created as fields in the Data Extension.</para>
+        /// </summary>
+        /// <param name="externalKey"></param>
+        /// <param name="layoutHtml">Replacement values in layoutHtml (for example %%FirstName%% or %%MyOwnVariableName%% ) 
+        /// will be parsed and corresponding fields created in the Data Extension with that name.</param>
+        /// <param name="priority"></param>
+        /// <returns></returns>
+        public int Create(string externalKey, string layoutHtml, Priority priority = Priority.Medium)
+        {
+            return _dynamicTriggeredEmailCreator.Create(externalKey, layoutHtml, priority);
+        }
+
+        public int CreateTriggeredSendDefinitionWithEmailTemplate(string externalKey, string layoutHtmlAboveBodyTag, string layoutHtmlBelowBodyTag, Priority priority = Priority.Medium)
         {
             return CreateWithTemplate(externalKey,
                 layoutHtmlAboveBodyTag +
@@ -61,12 +91,15 @@ namespace ExactTarget.TriggeredEmail.Creation
                 EmailContentHelper.GetOpenTrackingTag() +
                 EmailContentHelper.GetCompanyPhysicalMailingAddressTags() + 
                 "</body>" +
-                layoutHtmlBelowBodyTag);
+                layoutHtmlBelowBodyTag,
+                priority);
         }
 
-        public int CreateTriggeredSendDefinitionWithPasteHtml(string externalKey)
+        
+
+        public int CreateTriggeredSendDefinitionWithPasteHtml(string externalKey, Priority priority = Priority.Medium)
         {
-            return CreateWithoutTemplate(externalKey);
+            return CreateWithoutTemplate(externalKey, priority);
         }
 
         public void StartTriggeredSend(string externalKey)
@@ -74,17 +107,17 @@ namespace ExactTarget.TriggeredEmail.Creation
             _triggeredSendDefinitionClient.StartTriggeredSend(externalKey);
         }
 
-        private int CreateWithTemplate(string externalKey, string layoutHtml)
+        private int CreateWithTemplate(string externalKey, string layoutHtml, Priority priority)
         {
-            return Create(externalKey, layoutHtml);
+            return CreateTheEmail(externalKey, layoutHtml, priority);
         }
 
-        private int CreateWithoutTemplate(string externalKey)
+        private int CreateWithoutTemplate(string externalKey, Priority priority)
         {
-            return Create(externalKey,null);
+            return CreateTheEmail(externalKey, null, priority);
         }
 
-        private int Create(string externalKey, string layoutHtml)
+        private int CreateTheEmail(string externalKey, string layoutHtml, Priority priority)
         {
             var isTemplated = !string.IsNullOrWhiteSpace(layoutHtml);
             if (externalKey.Length > Guid.Empty.ToString().Length)
@@ -154,7 +187,8 @@ namespace ExactTarget.TriggeredEmail.Creation
                                                                                 dataExtensionExternalKey,
                                                                                 deliveryProfileExternalKey,
                                                                                 externalKey,
-                                                                                externalKey);
+                                                                                externalKey,
+                                                                                priority.ToString());
 
             
         }
