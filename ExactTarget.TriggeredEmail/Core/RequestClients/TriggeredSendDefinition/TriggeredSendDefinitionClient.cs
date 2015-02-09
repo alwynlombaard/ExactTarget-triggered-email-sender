@@ -24,7 +24,8 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition
             string dataExtensionCustomerKey,
             string deliveryProfileCustomerKey,
             string name, 
-            string description)
+            string description,
+			string priority = "")
         {
             var ts = new ExactTargetApi.TriggeredSendDefinition
             {
@@ -46,19 +47,19 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition
                     CustomerKey = deliveryProfileCustomerKey
                 },
                 IsWrapped = true,
-                IsWrappedSpecified = true
-
+                IsWrappedSpecified = true,
+				Priority = priority
             };
-            string requestId, status;
-            var result = _client.Create(new CreateOptions(), new APIObject[] { ts }, out requestId, out status);
 
-            ExactTargetResultChecker.CheckResult(result.FirstOrDefault());
+	        string requestId, status;
+	        var result = _client.Create(new CreateOptions(), new APIObject[] { ts }, out requestId, out status);
 
-            return result.First().NewID;
+	        ExactTargetResultChecker.CheckResult(result.FirstOrDefault());
 
+	        return result.First().NewID;
         }
 
-        public bool DoesTriggeredSendDefinitionExist(string externalKey)
+	    public bool DoesTriggeredSendDefinitionExist(string externalKey)
         {
             return _sharedCoreRequestClient.DoesObjectExist("CustomerKey", externalKey, "TriggeredSendDefinition");
         }

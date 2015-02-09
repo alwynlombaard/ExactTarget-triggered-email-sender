@@ -7,7 +7,8 @@
             string dataExtensionCustomerKey,
             string deliveryProfileCustomerKey,
             string name, 
-            string description);
+            string description,
+			string priority="");
 
         bool DoesTriggeredSendDefinitionExist(string externalKey);
 
