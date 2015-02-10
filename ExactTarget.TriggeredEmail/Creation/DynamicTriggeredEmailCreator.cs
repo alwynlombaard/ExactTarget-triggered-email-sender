@@ -62,13 +62,11 @@ namespace ExactTarget.TriggeredEmail.Creation
                 var dataExtensionTemplateObjectId =
                     _dataExtensionClient.RetrieveTriggeredSendDataExtensionTemplateObjectId();
 
-                var regex = new Regex(@"(?<=%%)[a-zA-Z0-9].*?[a-zA-Z0-9]?(?=%%)");
-                var matches = regex.Matches(layoutHtml);
                 var dataExtensionFieldNames = new HashSet<string> {"Subject", "Body", "Head"};
-
-                for (var i = 0; i < matches.Count; i++)
+                var replacementFields = ParseReplacementFields(layoutHtml);
+                foreach (var replacementField in replacementFields)
                 {
-                    dataExtensionFieldNames.Add(matches[i].Value);
+                    dataExtensionFieldNames.Add(replacementField);    
                 }
 
                 _dataExtensionClient.CreateDataExtension(dataExtensionTemplateObjectId,
@@ -97,5 +95,22 @@ namespace ExactTarget.TriggeredEmail.Creation
                 emailId, dataExtensionExternalKey, deliveryProfileExternalKey, externalKey, externalKey, priority.ToString());
             return triggeredSendDefinition;
         }
+
+        public static IEnumerable<string> ParseReplacementFields(string layoutHtml)
+        {
+            var replacementFields = new List<string>();
+            if (string.IsNullOrWhiteSpace(layoutHtml))
+            {
+                return replacementFields;
+            }
+            var regex = new Regex(@"(?<=%%)[a-zA-Z0-9].*?[a-zA-Z0-9]?(?=%%)");
+            var matches = regex.Matches(layoutHtml);
+
+            for (var i = 0; i < matches.Count; i++)
+            {
+                replacementFields.Add(matches[i].Value);
+            }
+            return replacementFields;
+        }    
     }
 }
