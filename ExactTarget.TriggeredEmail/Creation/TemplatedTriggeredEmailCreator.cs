@@ -11,7 +11,7 @@ using Priority = ExactTarget.TriggeredEmail.Trigger.Priority;
 
 namespace ExactTarget.TriggeredEmail.Creation
 {
-    public class DynamicTriggeredEmailCreator : IDynamicTriggeredEmailCreator
+    public class TemplatedTriggeredEmailCreator : ITriggeredEmailCreator
     {
         private readonly IDataExtensionClient _dataExtensionClient;
         private readonly IDeliveryProfileClient _deliveryProfileClient;
@@ -19,7 +19,7 @@ namespace ExactTarget.TriggeredEmail.Creation
         private readonly IEmailTemplateClient _emailTemplateClient;
         private readonly ITriggeredSendDefinitionClient _triggeredSendDefinitionClient;
 
-        public DynamicTriggeredEmailCreator(IDataExtensionClient dataExtensionClient,
+        public TemplatedTriggeredEmailCreator(IDataExtensionClient dataExtensionClient,
             ITriggeredSendDefinitionClient triggeredSendDefinitionClient,
             IEmailTemplateClient emailTemplateClient,
             IEmailRequestClient emailRequestClient,
@@ -32,7 +32,7 @@ namespace ExactTarget.TriggeredEmail.Creation
             _deliveryProfileClient = deliveryProfileClient;
         }
 
-        public DynamicTriggeredEmailCreator(IExactTargetConfiguration config)
+        public TemplatedTriggeredEmailCreator(IExactTargetConfiguration config)
         {
             _triggeredSendDefinitionClient = new TriggeredSendDefinitionClient(config);
             _dataExtensionClient = new DataExtensionClient(config);
@@ -93,6 +93,5 @@ namespace ExactTarget.TriggeredEmail.Creation
                 emailId, dataExtensionExternalKey, deliveryProfileExternalKey, externalKey, externalKey, priority.ToString());
             return triggeredSendDefinition;
         }
-
     }
 }

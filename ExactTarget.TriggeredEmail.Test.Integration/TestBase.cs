@@ -14,6 +14,11 @@ namespace ExactTarget.TriggeredEmail.Test.Integration
         {
             TestRecipientEmail = "";
 
+            if (string.IsNullOrWhiteSpace(TestRecipientEmail))
+            {
+                Assert.Fail("You have to supply value for TestRecipientEmail before running these tests.");
+            }
+
             Config = new ExactTargetConfiguration
             {
                 ApiUserName = "",
@@ -21,11 +26,6 @@ namespace ExactTarget.TriggeredEmail.Test.Integration
                 EndPoint = "https://webservice.s6.exacttarget.com/Service.asmx",//update your correct endpoint
                 ClientId = 6269489, // optional  business unit to use
             };
-
-            if (string.IsNullOrWhiteSpace(TestRecipientEmail))
-            {
-                Assert.Fail("You have to supply value for TestRecipientEmail before running these tests.");
-            }
 
             if (string.IsNullOrWhiteSpace(Config.ApiUserName) || string.IsNullOrWhiteSpace(Config.ApiPassword))
             {

@@ -5,10 +5,10 @@ using NUnit.Framework;
 
 namespace ExactTarget.TriggeredEmail.Test.Integration
 {
-    public class DynamicTemplatedTriggeredEmailTests : TestBase
+    public class PasteHtmlTriggeredEmailWithLayoutTest : TestBase
     {
         [Test]
-        public void CreateAndSend()
+        public void Create_And_Send_A_PasteHtml_Triggered_Email_With_Custom_LayoutHtml_And_Custom_Replacement_Fields()
         {
             var externalKey = Guid.NewGuid().ToString();
             Create(externalKey);
@@ -19,13 +19,14 @@ namespace ExactTarget.TriggeredEmail.Test.Integration
         {
             var triggeredEmailCreator = new TriggeredEmailCreator(Config);
 
-            Assert.DoesNotThrow(() => triggeredEmailCreator.Create(
+            Assert.DoesNotThrow(() => triggeredEmailCreator.CreateTriggeredSendDefinitionWithPasteHtml(
                                         externalKey,
                                         "<html>" +
                                         "<head>" +
                                         "<style>.green{color:green}</style>" +
                                         "</head>" +
                                         "<body>Hello %%FirstName%%,   " +
+                                        "<p>This is a paste Html email with custom fields.</p>" +
                                         "<p class='green'>Green Content: %%MyOwnValue%% ...</p>" +
                                         "<body>" +
                                         "<html>",

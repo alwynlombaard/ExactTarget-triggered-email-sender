@@ -51,12 +51,23 @@ recipient address, subject, html body and optionally html head content.
 //create and start Triggered Send (only required to do this once)
 var triggeredEmailCreator = new TriggeredEmailCreator(config);
 
-triggeredEmailCreator.CreateTriggeredSendDefinitionWithPasteHtml("new-external-key");
+triggeredEmailCreator.CreateTriggeredSendDefinitionWithPasteHtml(
+				"new-external-key",
+				"<html>" +
+				"<head>" +
+				"<style>.green{color:green}</style>" +
+				"</head>" +
+				"<body>Hello %%FirstName%%,   " +
+				"<p>This is a paste Html email with custom fields.</p>" +
+				"<p class='green'>Green Content: %%MyOwnValue%% ...</p>" +
+				"<body>" +
+				"<html>");
 
 triggeredEmailCreator.StartTriggeredSend("new-external-key");
 ```
 * The above example will create a Triggered Send Definition,
-Data Extension with "Subject" and "Body" and "Head", Paste HTML Email
+Data Extension with "Subject" and replacement values you specified in
+you layout (%%FirstName%%, %%MyOwnValue%%), Paste HTML Email
 and a Delivery Profile for the Data Extension without header and footer
 in ExactTarget.
 
@@ -65,11 +76,8 @@ Now you can trigger an email:
 var triggeredEmail = new ExactTargetTriggeredEmail("new-external-key", 
 										"recipient@temp.uri");
 triggeredEmail.AddReplacementValue("Subject","Test email");
-triggeredEmail.AddReplacementValue("Body",
-	"<p>Test paragraph</p>" +
-	"<p class='red'>This is some text in red</p>");
-triggeredEmail.AddReplacementValue("Head","<style>.red{color:red}</style>");
-
+triggeredEmail.AddReplacementValue("FirstName","John");
+triggeredEmail.AddReplacementValue("MyOwnValue","Some test copy here...");
 
 var emailTrigger = new EmailTrigger(config);
 emailTrigger.Trigger(triggeredEmail);
@@ -95,7 +103,7 @@ triggeredEmailCreator.StartTriggeredSend("new-external-key");
 ```
 * The above example will create a Triggered Send Definition,
 Data Extension with "Subject" and replacement values you specified in
-you layout (FirstName, MyOwnValue),
+you layout (%%FirstName%%, %%MyOwnValue%%),
 Paste HTML Email Template, an Email from that template
 and a Delivery Profile for the Data Extension without header and footer
 in ExactTarget.
