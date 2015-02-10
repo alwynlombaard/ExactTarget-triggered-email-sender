@@ -67,6 +67,7 @@
     <Compile Include="Creation\DynamicTriggeredEmailCreator.cs" />
     <Compile Include="Creation\IDynamicTriggeredEmailCreator.cs" />
     <Compile Include="Creation\ITriggeredEmailCreator.cs" />
+    <Compile Include="Creation\LayoutHtmlReplacementFieldNameParser.cs" />
     <Compile Include="Creation\TriggeredEmailCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\ExactTargetApi\Reference.cs">
