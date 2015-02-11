@@ -2,9 +2,9 @@
 <html>
 
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Sending transactional emails with ExactTarget SOAP API : Made easy in .Net by Alwyn Lombaard" />
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Sending transactional emails with ExactTarget SOAP API : Made easy in .Net by Alwyn Lombaard">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
@@ -32,19 +32,19 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h2>
-<a name="how-to-send-a-transactional-triggered-send-definition-email-with-exacttarget-soap-api" class="anchor" href="#how-to-send-a-transactional-triggered-send-definition-email-with-exacttarget-soap-api"><span class="octicon octicon-link"></span></a>How to send a transactional (Triggered Send Definition) email with ExactTarget SOAP API</h2>
+<a id="how-to-send-a-transactional-triggered-send-definition-email-with-exacttarget-soap-api" class="anchor" href="#how-to-send-a-transactional-triggered-send-definition-email-with-exacttarget-soap-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to send a transactional (Triggered Send Definition) email with ExactTarget SOAP API</h2>
 
 <p>25 June 2014</p>
 
 <h2>
-<a name="why-i-had-to-make-it-easy" class="anchor" href="#why-i-had-to-make-it-easy"><span class="octicon octicon-link"></span></a>Why I had to make it easy</h2>
+<a id="why-i-had-to-make-it-easy" class="anchor" href="#why-i-had-to-make-it-easy" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why I had to make it easy</h2>
 
 <p>Sending a transactional email using ExactTarget is the biggest pain in the butt that I had to endure as a developer lately because setting up a new one required me to log in to ExactTarget and shaving yaks called "Data Extension", "Triggered Send", "Triggered Send Definition", "Delivery Profile", "Email Templates" etc.. I just wanted to be able to send a simple transactional email without first having to perform a number of steps in the cumbersome ExactTarget UI ....so I created this library to make my life easier when I need to set up a new transactional email. I hope this can help some poor soul out there suffering the same fate I have.</p>
 
 <p><a href="https://plus.google.com/104188129605360544174?rel=author">Alwyn Lombaard</a></p>
 
 <h2>
-<a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting started</h2>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting started</h2>
 
 <p>You require an API user name, password and endpoint before you can call the SOAP API. Assuming you have those, here is a simple way of how you can send (and create) a transactional email.</p>
 
@@ -54,76 +54,80 @@
 </code></pre>
 
 <h2>
-<a name="configure" class="anchor" href="#configure"><span class="octicon octicon-link"></span></a>Configure</h2>
+<a id="configure" class="anchor" href="#configure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure</h2>
 
-<div class="highlight highlight-C#"><pre><span class="kt">var</span> <span class="n">config</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ExactTargetConfiguration</span>
-<span class="p">{</span>
-    <span class="n">ApiUserName</span> <span class="p">=</span> <span class="s">"API_User"</span><span class="p">,</span>
-    <span class="n">ApiPassword</span> <span class="p">=</span> <span class="s">"API_Password"</span><span class="p">,</span>
-    <span class="c1">//use your endpoint given to you by ET</span>
-    <span class="n">EndPoint</span> <span class="p">=</span> <span class="s">"https://webservice.s6.exacttarget.com/Service.asmx"</span><span class="p">,</span>
-    <span class="n">ClientId</span> <span class="p">=</span> <span class="m">6269485</span><span class="c1">//optional: business unit id you wish to use</span>
-<span class="p">};</span>
-</pre></div>
+<div class="highlight highlight-C#"><pre><span class="pl-k">var</span> config = <span class="pl-s">new</span> ExactTargetConfiguration
+{
+    ApiUserName = <span class="pl-s1"><span class="pl-pds">"</span>API_User<span class="pl-pds">"</span></span>,
+    ApiPassword = <span class="pl-s1"><span class="pl-pds">"</span>API_Password<span class="pl-pds">"</span></span>,
+    <span class="pl-c">//use your endpoint given to you by ET</span>
+    EndPoint = <span class="pl-s1"><span class="pl-pds">"</span>https://webservice.s6.exacttarget.com/Service.asmx<span class="pl-pds">"</span></span>,
+    ClientId = <span class="pl-c1">6269485</span><span class="pl-c">//optional: business unit id you wish to use</span>
+};</pre></div>
 
 <h2>
-<a name="if-you-dont-have-a-triggered-send-set-up-yet" class="anchor" href="#if-you-dont-have-a-triggered-send-set-up-yet"><span class="octicon octicon-link"></span></a>If you don't have a "Triggered Send" set up yet</h2>
+<a id="if-you-dont-have-a-triggered-send-set-up-yet" class="anchor" href="#if-you-dont-have-a-triggered-send-set-up-yet" aria-hidden="true"><span class="octicon octicon-link"></span></a>If you don't have a "Triggered Send" set up yet</h2>
 
 <p>You can set up a new one easily without the need of logging into ExactTarget to do it.</p>
 
 <h3>
-<a name="step-1-setup-a-new-email" class="anchor" href="#step-1-setup-a-new-email"><span class="octicon octicon-link"></span></a>Step 1: Setup a new email</h3>
+<a id="step-1-setup-a-new-email" class="anchor" href="#step-1-setup-a-new-email" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 1: Setup a new email</h3>
 
 <p>You only need to perform this step once for each email type you want to trigger. (For example order confirmation, welcome registration, order dispatched etc)</p>
 
 <p>Example</p>
 
-<div class="highlight highlight-C#"><pre><span class="c1">//create and start Triggered Send (only required to do this once)</span>
-<span class="kt">var</span> <span class="n">triggeredEmailCreator</span> <span class="p">=</span> <span class="k">new</span> <span class="n">TriggeredEmailCreator</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
+<div class="highlight highlight-C#"><pre><span class="pl-c">//create and start Triggered Send (only required to do this once)</span>
+<span class="pl-k">var</span> triggeredEmailCreator = <span class="pl-s">new</span> TriggeredEmailCreator(config);
 
-<span class="n">triggeredEmailCreator</span><span class="p">.</span><span class="n">CreateTriggeredSendDefinitionWithPasteHtml</span><span class="p">(</span><span class="s">"order-comfirmation"</span><span class="p">);</span>
+triggeredEmailCreator.Create(<span class="pl-s1"><span class="pl-pds">"</span>order-confirmation<span class="pl-pds">"</span></span>,
+                            <span class="pl-s1"><span class="pl-pds">"</span>&lt;html&gt;&lt;head&gt;&lt;style&gt;.green{color:green}&lt;/style&gt;&lt;/head&gt;<span class="pl-pds">"</span></span> +
+                            <span class="pl-s1"><span class="pl-pds">"</span>&lt;body&gt;&lt;p&gt;Dear %%FirstName%%,&lt;/p&gt;<span class="pl-pds">"</span></span> +
+                            <span class="pl-s1"><span class="pl-pds">"</span>&lt;p&gt;Your order has been processed&lt;/p&gt;<span class="pl-pds">"</span></span> +
+                            <span class="pl-s1"><span class="pl-pds">"</span>&lt;p&gt;%%OrderSummary%%&lt;/p&gt; <span class="pl-pds">"</span></span> +
+                            <span class="pl-s1"><span class="pl-pds">"</span>&lt;p class='green'&gt;Once again,  thank you!&lt;/p&gt;<span class="pl-pds">"</span></span> +
+                            <span class="pl-s1"><span class="pl-pds">"</span>&lt;/body&gt;&lt;/html&gt;<span class="pl-pds">"</span></span>);
 
-<span class="n">triggeredEmailCreator</span><span class="p">.</span><span class="n">StartTriggeredSend</span><span class="p">(</span><span class="s">"order-comfirmation"</span><span class="p">);</span>
-</pre></div>
+triggeredEmailCreator.StartTriggeredSend(<span class="pl-s1"><span class="pl-pds">"</span>order-confirmation<span class="pl-pds">"</span></span>);</pre></div>
 
 <ul>
 <li>The above example will create a TriggeredSendDefinition,
-Data Extension with "Subject" and "Body" and "Head", Paste HTML Email
-and a Delivery Profile for the Data Extension without header and footer
-in ExactTarget.</li>
-</ul><h3>
-<a name="step-2-sending-a-transactional-email" class="anchor" href="#step-2-sending-a-transactional-email"><span class="octicon octicon-link"></span></a>Step 2: Sending a transactional email</h3>
+Data Extension with "Subject" and the replacement values specified in your
+Html layout markup (%%FirstName%%, %%OrderSummary%%), Paste HTML Emailand a 
+Delivery Profile for the Data Extension without header and footer in ExactTarget.</li>
+</ul>
 
-<hr><p>Now you can trigger an email. You give replacement values for Subject, Body and Head parts of the email. Head value is used to inject css into the head part of the email if you want to style the HTML version of the email.</p>
+<h3>
+<a id="step-2-sending-a-transactional-email" class="anchor" href="#step-2-sending-a-transactional-email" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 2: Sending a transactional email</h3>
 
-<div class="highlight highlight-C#"><pre><span class="kt">var</span> <span class="n">triggeredEmail</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ExactTargetTriggeredEmail</span><span class="p">(</span><span class="s">"order-comfirmation"</span><span class="p">,</span> 
-                        <span class="s">"recipient@temp.uri"</span><span class="p">);</span>
-<span class="n">triggeredEmail</span><span class="p">.</span><span class="n">AddReplacementValue</span><span class="p">(</span><span class="s">"Subject"</span><span class="p">,</span><span class="s">"Thank you for placing your order"</span><span class="p">);</span>
-<span class="n">triggeredEmail</span><span class="p">.</span><span class="n">AddReplacementValue</span><span class="p">(</span><span class="s">"Body"</span><span class="p">,</span>
-    <span class="s">"&lt;p&gt;Your order has been processed&lt;/p&gt;"</span> <span class="p">+</span>
-    <span class="s">"&lt;p class='green'&gt;This is some text in green&lt;/p&gt;"</span><span class="p">);</span>
-<span class="n">triggeredEmail</span><span class="p">.</span><span class="n">AddReplacementValue</span><span class="p">(</span><span class="s">"Head"</span><span class="p">,</span><span class="s">"&lt;style&gt;.green{color:green}&lt;/style&gt;"</span><span class="p">);</span>
+<hr>
 
+<p>Now you can trigger an email. You give replacement values for Subject, Body and Head parts of the email. Head value is used to inject css into the head part of the email if you want to style the HTML version of the email.</p>
 
-<span class="kt">var</span> <span class="n">emailTrigger</span> <span class="p">=</span> <span class="k">new</span> <span class="n">EmailTrigger</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
-<span class="n">emailTrigger</span><span class="p">.</span><span class="n">Trigger</span><span class="p">(</span><span class="n">triggeredEmail</span><span class="p">);</span>
-</pre></div>
+<div class="highlight highlight-C#"><pre><span class="pl-k">var</span> triggeredEmail = <span class="pl-s">new</span> ExactTargetTriggeredEmail(<span class="pl-s1"><span class="pl-pds">"</span>order-confirmation<span class="pl-pds">"</span></span>,
+                                                <span class="pl-s1"><span class="pl-pds">"</span>recipient@temp.uri<span class="pl-pds">"</span></span>);
+
+triggeredEmail.AddReplacementValue(<span class="pl-s1"><span class="pl-pds">"</span>Subject<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>Thank you for placing your order<span class="pl-pds">"</span></span>);
+triggeredEmail.AddReplacementValue(<span class="pl-s1"><span class="pl-pds">"</span>FirstName<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>John<span class="pl-pds">"</span></span>);
+triggeredEmail.AddReplacementValue(<span class="pl-s1"><span class="pl-pds">"</span>OrderSummary<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>&lt;ul&gt;&lt;li&gt;Item 1&lt;/li&gt;&lt;li&gt;Item 2&lt;/li&gt;&lt;/ul&gt;<span class="pl-pds">"</span></span>);
+
+<span class="pl-k">var</span> emailTrigger = <span class="pl-s">new</span> EmailTrigger(config);
+emailTrigger.Trigger(triggeredEmail);</pre></div>
 
 <h2>
-<a name="if-you-already-have-a-triggered-send-set-up" class="anchor" href="#if-you-already-have-a-triggered-send-set-up"><span class="octicon octicon-link"></span></a>If you already have a "Triggered Send" set up</h2>
+<a id="if-you-already-have-a-triggered-send-set-up" class="anchor" href="#if-you-already-have-a-triggered-send-set-up" aria-hidden="true"><span class="octicon octicon-link"></span></a>If you already have a "Triggered Send" set up</h2>
 
-<div class="highlight highlight-C#"><pre><span class="c1">//the email to trigger</span>
- <span class="kt">var</span> <span class="n">triggeredEmail</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ExactTargetTriggeredEmail</span><span class="p">(</span><span class="s">"external-key-of-trigger"</span><span class="p">,</span> 
-                                <span class="s">"recipient@uri.test"</span> <span class="p">);</span>
+<div class="highlight highlight-C#"><pre><span class="pl-c">//the email to trigger</span>
+ <span class="pl-k">var</span> triggeredEmail = <span class="pl-s">new</span> ExactTargetTriggeredEmail(<span class="pl-s1"><span class="pl-pds">"</span>external-key-of-trigger<span class="pl-pds">"</span></span>, 
+                                <span class="pl-s1"><span class="pl-pds">"</span>recipient@uri.test<span class="pl-pds">"</span></span> );
 
-<span class="c1">//specify values for the Data Extension if any (optional)</span>
-<span class="n">triggeredEmail</span><span class="p">.</span><span class="n">AddReplacementValue</span><span class="p">(</span><span class="s">"DataExtensionFieldName1"</span><span class="p">,</span> <span class="s">"Value 1"</span><span class="p">);</span>
-<span class="n">triggeredEmail</span><span class="p">.</span><span class="n">AddReplacementValue</span><span class="p">(</span><span class="s">"DataExtensionFieldName2"</span><span class="p">,</span> <span class="s">"Value 2"</span><span class="p">);</span>
+<span class="pl-c">//specify values for the Data Extension if any (optional)</span>
+triggeredEmail.AddReplacementValue(<span class="pl-s1"><span class="pl-pds">"</span>DataExtensionFieldName1<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>Value 1<span class="pl-pds">"</span></span>);
+triggeredEmail.AddReplacementValue(<span class="pl-s1"><span class="pl-pds">"</span>DataExtensionFieldName2<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>Value 2<span class="pl-pds">"</span></span>);
 
-<span class="c1">//trigger the email</span>
-<span class="kt">var</span> <span class="n">emailTrigger</span> <span class="p">=</span> <span class="k">new</span> <span class="n">EmailTrigger</span><span class="p">(</span><span class="n">config</span><span class="p">);</span>
-<span class="n">emailTrigger</span><span class="p">.</span><span class="n">Trigger</span><span class="p">(</span><span class="n">triggeredEmail</span><span class="p">);</span>
-</pre></div>
+<span class="pl-c">//trigger the email</span>
+<span class="pl-k">var</span> emailTrigger = <span class="pl-s">new</span> EmailTrigger(config);
+emailTrigger.Trigger(triggeredEmail);</pre></div>
       </section>
     </div>
 
