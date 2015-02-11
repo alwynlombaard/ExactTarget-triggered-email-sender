@@ -7,11 +7,11 @@ using ExactTarget.TriggeredEmail.Core.RequestClients.DeliveryProfile;
 using ExactTarget.TriggeredEmail.Core.RequestClients.Email;
 using ExactTarget.TriggeredEmail.Core.RequestClients.EmailTemplate;
 using ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition;
-using Priority = ExactTarget.TriggeredEmail.Trigger.Priority;
+using ExactTarget.TriggeredEmail.Trigger;
 
-namespace ExactTarget.TriggeredEmail.Creation
+namespace ExactTarget.TriggeredEmail.Creation.Creators
 {
-    public class TemplatedTriggeredEmailCreator : ITriggeredEmailCreator, IDisposable
+    public class TemplatedEmailCreator : IEmailCreator, IDisposable
     {
         private readonly IDataExtensionClient _dataExtensionClient;
         private readonly IDeliveryProfileClient _deliveryProfileClient;
@@ -19,7 +19,7 @@ namespace ExactTarget.TriggeredEmail.Creation
         private readonly IEmailTemplateClient _emailTemplateClient;
         private readonly ITriggeredSendDefinitionClient _triggeredSendDefinitionClient;
 
-        public TemplatedTriggeredEmailCreator(IDataExtensionClient dataExtensionClient,
+        public TemplatedEmailCreator(IDataExtensionClient dataExtensionClient,
             ITriggeredSendDefinitionClient triggeredSendDefinitionClient,
             IEmailTemplateClient emailTemplateClient,
             IEmailRequestClient emailRequestClient,
@@ -32,7 +32,7 @@ namespace ExactTarget.TriggeredEmail.Creation
             _deliveryProfileClient = deliveryProfileClient;
         }
 
-        public TemplatedTriggeredEmailCreator(IExactTargetConfiguration config): this(
+        public TemplatedEmailCreator(IExactTargetConfiguration config): this(
             new DataExtensionClient(config),
             new TriggeredSendDefinitionClient(config),
             new EmailTemplateClient(config),

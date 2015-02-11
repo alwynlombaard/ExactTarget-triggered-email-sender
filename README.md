@@ -21,8 +21,6 @@ var config = new ExactTargetConfiguration
 	EndPoint = "https://webservice.s6.exacttarget.com/Service.asmx",
 	ClientId = 6269485,//optional business unit id
 };
-//above code is only for demonstration purposes
-//ideally you would want to load your configuration from a configuration file		
 ```
 
 ```C#
@@ -67,7 +65,7 @@ triggeredEmailCreator.StartTriggeredSend("new-external-key");
 ```
 * The above example will create a Triggered Send Definition,
 Data Extension with "Subject" and replacement values you specified in
-you layout (%%FirstName%%, %%MyOwnValue%%), Paste HTML Email
+your layout (%%FirstName%%, %%MyOwnValue%%), Paste HTML Email
 and a Delivery Profile for the Data Extension without header and footer
 in ExactTarget.
 
@@ -103,7 +101,7 @@ triggeredEmailCreator.StartTriggeredSend("new-external-key");
 ```
 * The above example will create a Triggered Send Definition,
 Data Extension with "Subject" and replacement values you specified in
-you layout (%%FirstName%%, %%MyOwnValue%%),
+your layout (%%FirstName%%, %%MyOwnValue%%),
 Paste HTML Email Template, an Email from that template
 and a Delivery Profile for the Data Extension without header and footer
 in ExactTarget.

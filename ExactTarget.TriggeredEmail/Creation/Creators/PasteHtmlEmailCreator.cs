@@ -8,16 +8,16 @@ using ExactTarget.TriggeredEmail.Core.RequestClients.Email;
 using ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition;
 using ExactTarget.TriggeredEmail.Trigger;
 
-namespace ExactTarget.TriggeredEmail.Creation
+namespace ExactTarget.TriggeredEmail.Creation.Creators
 {
-    public class PasteHtmlTriggeredEmailCreator : ITriggeredEmailCreator, IDisposable
+    public class PasteHtmlEmailCreator : IEmailCreator, IDisposable
     {
         private readonly ITriggeredSendDefinitionClient _triggeredSendDefinitionClient;
         private readonly IDataExtensionClient _dataExtensionClient;
         private readonly IEmailRequestClient _emailRequestClient;
         private readonly IDeliveryProfileClient _deliveryProfileClient;
 
-        public PasteHtmlTriggeredEmailCreator(IDataExtensionClient dataExtensionClient,
+        public PasteHtmlEmailCreator(IDataExtensionClient dataExtensionClient,
             ITriggeredSendDefinitionClient triggeredSendDefinitionClient,
             IEmailRequestClient emailRequestClient,
             IDeliveryProfileClient deliveryProfileClient)
@@ -28,7 +28,7 @@ namespace ExactTarget.TriggeredEmail.Creation
             _deliveryProfileClient = deliveryProfileClient;
         }
 
-        public PasteHtmlTriggeredEmailCreator(IExactTargetConfiguration config)
+        public PasteHtmlEmailCreator(IExactTargetConfiguration config)
             : this( new DataExtensionClient(config),
                     new TriggeredSendDefinitionClient(config),
                     new EmailRequestClient(config),

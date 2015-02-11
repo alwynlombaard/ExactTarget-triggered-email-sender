@@ -64,10 +64,11 @@
     <Compile Include="Core\RequestClients\Shared\SharedCoreRequestClient.cs" />
     <Compile Include="Core\RequestClients\TriggeredSendDefinition\ITriggeredSendDefinitionClient.cs" />
     <Compile Include="Core\RequestClients\TriggeredSendDefinition\TriggeredSendDefinitionClient.cs" />
-    <Compile Include="Creation\TemplatedTriggeredEmailCreator.cs" />
+    <Compile Include="Creation\Creators\IEmailCreator.cs" />
+    <Compile Include="Creation\Creators\LayoutHtmlReplacementFieldNameParser.cs" />
+    <Compile Include="Creation\Creators\PasteHtmlEmailCreator.cs" />
+    <Compile Include="Creation\Creators\TemplatedEmailCreator.cs" />
     <Compile Include="Creation\ITriggeredEmailCreator.cs" />
-    <Compile Include="Creation\LayoutHtmlReplacementFieldNameParser.cs" />
-    <Compile Include="Creation\PasteHtmlTriggeredEmailCreator.cs" />
     <Compile Include="Creation\TriggeredEmailCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\ExactTargetApi\Reference.cs">

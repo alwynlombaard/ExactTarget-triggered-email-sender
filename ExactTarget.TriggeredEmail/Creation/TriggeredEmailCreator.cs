@@ -1,11 +1,12 @@
 ﻿using ExactTarget.TriggeredEmail.Core;
 using ExactTarget.TriggeredEmail.Core.Configuration;
 using ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition;
+using ExactTarget.TriggeredEmail.Creation.Creators;
 using ExactTarget.TriggeredEmail.Trigger;
 
 namespace ExactTarget.TriggeredEmail.Creation
 {
-    public class TriggeredEmailCreator
+    public class TriggeredEmailCreator : ITriggeredEmailCreator
     {
         private readonly IExactTargetConfiguration _config;
 
@@ -31,7 +32,7 @@ namespace ExactTarget.TriggeredEmail.Creation
                          "</body>" +
                          "</html>";
 
-            using (var creator = new TemplatedTriggeredEmailCreator(_config))
+            using (var creator = new TemplatedEmailCreator(_config))
             {
                 return creator.Create(externalKey, layoutHtml, priority);
             }
@@ -50,7 +51,7 @@ namespace ExactTarget.TriggeredEmail.Creation
         /// <returns></returns>
         public int Create(string externalKey, string layoutHtml, Priority priority = Priority.Medium)
         {
-            using (var creator = new TemplatedTriggeredEmailCreator(_config))
+            using (var creator = new TemplatedEmailCreator(_config))
             {
                 return creator.Create(externalKey, layoutHtml, priority);
             }
@@ -74,7 +75,7 @@ namespace ExactTarget.TriggeredEmail.Creation
                              "</body>" +
                              layoutHtmlBelowBodyTag;
             
-            using (var creator = new TemplatedTriggeredEmailCreator(_config))
+            using (var creator = new TemplatedEmailCreator(_config))
             {
                 return creator.Create(externalKey, layoutHtml, priority);
             }
@@ -93,7 +94,7 @@ namespace ExactTarget.TriggeredEmail.Creation
                                       "%%Body%%" +
                                       "</html>";
 
-            using (var creator = new PasteHtmlTriggeredEmailCreator(_config))
+            using (var creator = new PasteHtmlEmailCreator(_config))
             {
                 return creator.Create(externalKey, layoutHtml, priority);
             }
@@ -111,7 +112,7 @@ namespace ExactTarget.TriggeredEmail.Creation
         public int CreateTriggeredSendDefinitionWithPasteHtml(string externalKey, string layoutHtml, Priority priority = Priority.Medium)
         {
 
-            using (var creator = new PasteHtmlTriggeredEmailCreator(_config))
+            using (var creator = new PasteHtmlEmailCreator(_config))
             {
                 return creator.Create(externalKey, layoutHtml, priority);
             }

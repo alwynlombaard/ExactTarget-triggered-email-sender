@@ -1,4 +1,5 @@
 ﻿using ExactTarget.TriggeredEmail.Creation;
+using ExactTarget.TriggeredEmail.Creation.Creators;
 using NUnit.Framework;
 
 namespace ExactTarget.TriggeredEmail.Test.Unit.Creation

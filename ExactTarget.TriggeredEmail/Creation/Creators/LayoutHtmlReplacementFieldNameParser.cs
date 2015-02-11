@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace ExactTarget.TriggeredEmail.Creation
+namespace ExactTarget.TriggeredEmail.Creation.Creators
 {
     public class LayoutHtmlReplacementFieldNameParser
     {
-
         public static IEnumerable<string> Parse(string layoutHtml)
         {
             var replacementFields = new List<string>();
