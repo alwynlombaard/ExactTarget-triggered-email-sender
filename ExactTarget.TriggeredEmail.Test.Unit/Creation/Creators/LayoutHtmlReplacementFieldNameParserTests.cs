@@ -1,8 +1,7 @@
-﻿using ExactTarget.TriggeredEmail.Creation;
-using ExactTarget.TriggeredEmail.Creation.Creators;
+﻿using ExactTarget.TriggeredEmail.Creation.Creators;
 using NUnit.Framework;
 
-namespace ExactTarget.TriggeredEmail.Test.Unit.Creation
+namespace ExactTarget.TriggeredEmail.Test.Unit.Creation.Creators
 {
     [TestFixture]
     public class LayoutHtmlReplacementFieldNameParserTests
