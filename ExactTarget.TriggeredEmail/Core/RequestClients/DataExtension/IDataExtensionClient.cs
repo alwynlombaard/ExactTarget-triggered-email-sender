@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ExactTarget.TriggeredEmail.Core.RequestClients.DataExtension
 {
-    public interface IDataExtensionClient
+    public interface IDataExtensionClient : IDisposable
     {
         void CreateDataExtension(string dataExtensionTemplateObjectId,
             string externalKey,

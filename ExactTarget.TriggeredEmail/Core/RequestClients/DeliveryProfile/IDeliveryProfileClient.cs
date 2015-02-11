@@ -1,6 +1,8 @@
-﻿namespace ExactTarget.TriggeredEmail.Core.RequestClients.DeliveryProfile
+﻿using System;
+
+namespace ExactTarget.TriggeredEmail.Core.RequestClients.DeliveryProfile
 {
-    public interface IDeliveryProfileClient
+    public interface IDeliveryProfileClient : IDisposable
     {
         string TryCreateBlankDeliveryProfile(string externalKey);
     }

@@ -7,25 +7,11 @@ namespace ExactTarget.TriggeredEmail.Creation
 {
     public class TriggeredEmailCreator
     {
-        private readonly ITriggeredSendDefinitionClient _triggeredSendDefinitionClient;
-        private readonly ITriggeredEmailCreator _templatedTriggeredEmailCreator;
-        private readonly ITriggeredEmailCreator _pasteHtmlTriggeredEmailCreator;
-
-        public TriggeredEmailCreator(ITriggeredSendDefinitionClient triggeredSendDefinitionClient,
-            ITriggeredEmailCreator templatedTriggeredEmailCreator,
-            ITriggeredEmailCreator pasteHtmlTriggeredEmailCreator)
-        {
-            _triggeredSendDefinitionClient = triggeredSendDefinitionClient;
-            _templatedTriggeredEmailCreator = templatedTriggeredEmailCreator;
-            _pasteHtmlTriggeredEmailCreator = pasteHtmlTriggeredEmailCreator;
-        }
+        private readonly IExactTargetConfiguration _config;
 
         public TriggeredEmailCreator(IExactTargetConfiguration config)
-            : this(new TriggeredSendDefinitionClient(config),
-                new TemplatedTriggeredEmailCreator(config),
-                new PasteHtmlTriggeredEmailCreator(config))
         {
-           
+            _config = config;
         }
 
         /// <summary>
@@ -37,14 +23,18 @@ namespace ExactTarget.TriggeredEmail.Creation
         /// <returns></returns>
         public int Create(string externalKey, Priority priority = Priority.Medium)
         {
-            var layout = "<html>" +
+            var layoutHtml = "<html>" +
                          "<body>" +
                          EmailContentHelper.GetContentAreaTag("dynamicArea") +
                          EmailContentHelper.GetOpenTrackingTag() +
                          EmailContentHelper.GetCompanyPhysicalMailingAddressTags() +
                          "</body>" +
                          "</html>";
-            return _templatedTriggeredEmailCreator.Create(externalKey, layout, priority);
+
+            using (var creator = new TemplatedTriggeredEmailCreator(_config))
+            {
+                return creator.Create(externalKey, layoutHtml, priority);
+            }
         }
 
         /// <summary>
@@ -60,7 +50,10 @@ namespace ExactTarget.TriggeredEmail.Creation
         /// <returns></returns>
         public int Create(string externalKey, string layoutHtml, Priority priority = Priority.Medium)
         {
-            return _templatedTriggeredEmailCreator.Create(externalKey, layoutHtml, priority);
+            using (var creator = new TemplatedTriggeredEmailCreator(_config))
+            {
+                return creator.Create(externalKey, layoutHtml, priority);
+            }
         }
 
         /// <summary>
@@ -80,7 +73,11 @@ namespace ExactTarget.TriggeredEmail.Creation
                              EmailContentHelper.GetContentAreaTag("dynamicArea") +
                              "</body>" +
                              layoutHtmlBelowBodyTag;
-            return _templatedTriggeredEmailCreator.Create(externalKey, layoutHtml, priority);
+            
+            using (var creator = new TemplatedTriggeredEmailCreator(_config))
+            {
+                return creator.Create(externalKey, layoutHtml, priority);
+            }
         }
 
         /// <summary>
@@ -91,12 +88,15 @@ namespace ExactTarget.TriggeredEmail.Creation
         /// <returns></returns>
         public int CreateTriggeredSendDefinitionWithPasteHtml(string externalKey, Priority priority = Priority.Medium)
         {
+            const string layoutHtml = "<html>" +
+                                      "<head>%%Head%%</head>" +
+                                      "%%Body%%" +
+                                      "</html>";
 
-            var layout = "<html>" +
-                         "<head>%%Head%%</head>" +
-                         "%%Body%%" +
-                         "</html>";
-            return _pasteHtmlTriggeredEmailCreator.Create(externalKey, layout, priority);
+            using (var creator = new PasteHtmlTriggeredEmailCreator(_config))
+            {
+                return creator.Create(externalKey, layoutHtml, priority);
+            }
         }
 
         /// <summary>
@@ -110,12 +110,19 @@ namespace ExactTarget.TriggeredEmail.Creation
         /// <returns></returns>
         public int CreateTriggeredSendDefinitionWithPasteHtml(string externalKey, string layoutHtml, Priority priority = Priority.Medium)
         {
-            return _pasteHtmlTriggeredEmailCreator.Create(externalKey, layoutHtml, priority);
+
+            using (var creator = new PasteHtmlTriggeredEmailCreator(_config))
+            {
+                return creator.Create(externalKey, layoutHtml, priority);
+            }
         }
 
         public void StartTriggeredSend(string externalKey)
         {
-            _triggeredSendDefinitionClient.StartTriggeredSend(externalKey);
+            using (var triggeredSendDefinitionClient = new TriggeredSendDefinitionClient(_config))
+            {
+                triggeredSendDefinitionClient.StartTriggeredSend(externalKey);
+            }
         }
     }
 }

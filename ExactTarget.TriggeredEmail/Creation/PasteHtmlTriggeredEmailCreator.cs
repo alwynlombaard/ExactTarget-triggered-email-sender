@@ -10,7 +10,7 @@ using ExactTarget.TriggeredEmail.Trigger;
 
 namespace ExactTarget.TriggeredEmail.Creation
 {
-    public class PasteHtmlTriggeredEmailCreator : ITriggeredEmailCreator
+    public class PasteHtmlTriggeredEmailCreator : ITriggeredEmailCreator, IDisposable
     {
         private readonly ITriggeredSendDefinitionClient _triggeredSendDefinitionClient;
         private readonly IDataExtensionClient _dataExtensionClient;
@@ -88,6 +88,14 @@ namespace ExactTarget.TriggeredEmail.Creation
                 externalKey,
                 externalKey,
                 priority.ToString());
+        }
+
+        public void Dispose()
+        {
+            _dataExtensionClient.Dispose();
+            _deliveryProfileClient.Dispose();
+            _emailRequestClient.Dispose();
+            _triggeredSendDefinitionClient.Dispose();
         }
     }
 }

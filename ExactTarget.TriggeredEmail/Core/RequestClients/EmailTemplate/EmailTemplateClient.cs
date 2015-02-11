@@ -56,5 +56,10 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.EmailTemplate
 
             return result.First().NewID;
         }
+
+        public void Dispose()
+        {
+            using (_client) { }
+        }
     }
 }

@@ -69,5 +69,10 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.Shared
 
             return string.Empty;
         }
+
+        public void Dispose()
+        {
+            using (_client) { }
+        }
     }
 }

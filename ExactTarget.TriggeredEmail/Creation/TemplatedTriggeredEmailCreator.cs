@@ -11,7 +11,7 @@ using Priority = ExactTarget.TriggeredEmail.Trigger.Priority;
 
 namespace ExactTarget.TriggeredEmail.Creation
 {
-    public class TemplatedTriggeredEmailCreator : ITriggeredEmailCreator
+    public class TemplatedTriggeredEmailCreator : ITriggeredEmailCreator, IDisposable
     {
         private readonly IDataExtensionClient _dataExtensionClient;
         private readonly IDeliveryProfileClient _deliveryProfileClient;
@@ -32,13 +32,14 @@ namespace ExactTarget.TriggeredEmail.Creation
             _deliveryProfileClient = deliveryProfileClient;
         }
 
-        public TemplatedTriggeredEmailCreator(IExactTargetConfiguration config)
+        public TemplatedTriggeredEmailCreator(IExactTargetConfiguration config): this(
+            new DataExtensionClient(config),
+            new TriggeredSendDefinitionClient(config),
+            new EmailTemplateClient(config),
+            new EmailRequestClient(config),
+            new DeliveryProfileClient(config)
+            )
         {
-            _triggeredSendDefinitionClient = new TriggeredSendDefinitionClient(config);
-            _dataExtensionClient = new DataExtensionClient(config);
-            _emailTemplateClient = new EmailTemplateClient(config);
-            _emailRequestClient = new EmailRequestClient(config);
-            _deliveryProfileClient = new DeliveryProfileClient(config);
         }
 
         public int Create(string externalKey, string layoutHtml, Priority priority = Priority.Medium)
@@ -92,6 +93,15 @@ namespace ExactTarget.TriggeredEmail.Creation
             var triggeredSendDefinition = _triggeredSendDefinitionClient.CreateTriggeredSendDefinition(externalKey,
                 emailId, dataExtensionExternalKey, deliveryProfileExternalKey, externalKey, externalKey, priority.ToString());
             return triggeredSendDefinition;
+        }
+
+        public void Dispose()
+        {
+            _dataExtensionClient.Dispose();
+            _deliveryProfileClient.Dispose();
+            _emailRequestClient.Dispose();
+            _emailTemplateClient.Dispose();
+            _triggeredSendDefinitionClient.Dispose();
         }
     }
 }

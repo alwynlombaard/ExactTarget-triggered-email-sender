@@ -1,6 +1,8 @@
-﻿namespace ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition
+﻿using System;
+
+namespace ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition
 {
-    public interface ITriggeredSendDefinitionClient
+    public interface ITriggeredSendDefinitionClient : IDisposable
     {
         int CreateTriggeredSendDefinition(string externalId,
             int emailId, 

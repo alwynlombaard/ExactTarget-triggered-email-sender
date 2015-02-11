@@ -49,5 +49,10 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.DeliveryProfile
                 return Guid.Empty.ToString();
             }
         }
+
+        public void Dispose()
+        {
+            using (_client) { }
+        }
     }
 }

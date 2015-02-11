@@ -78,6 +78,10 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.TriggeredSendDefinition
             var result = _client.Update(new UpdateOptions(), new APIObject[] { ts }, out requestId, out overallStatus);
             ExactTargetResultChecker.CheckResult(result.FirstOrDefault());
         }
-        
+
+        public void Dispose()
+        {
+            using (_client) { }
+        }
     }
 }

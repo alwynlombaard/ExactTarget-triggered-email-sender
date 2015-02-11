@@ -53,5 +53,10 @@ namespace ExactTarget.TriggeredEmail.Core.RequestClients.DataExtension
         {
             return _sharedCoreRequestClient.RetrieveObjectId("Name", "TriggeredSendDataExtension", "DataExtensionTemplate");
         }
+
+        public void Dispose()
+        {
+            using (_client){}
+        }
     }
 }
