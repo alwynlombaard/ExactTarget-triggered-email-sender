@@ -82,6 +82,34 @@ namespace ExactTarget.TriggeredEmail.Test.Unit.Trigger
         }
 
         [Test]
+        public void CheckResultThrowsExceptionWithSubscriberExcludedErrorEvenIfThereAreMultipleSubscriberResults()
+        {
+            var result = new TriggeredSendCreateResult
+            {
+                StatusCode = "Error",
+                StatusMessage = "Reason for failing",
+                SubscriberFailures = new[]
+                {
+                    new SubscriberResult
+                    {
+                        ErrorCode = "123", ErrorDescription = "Some other failure"
+                    },
+                    new SubscriberResult
+                    {
+                        ErrorCode = "24", ErrorDescription = "Subscriber was excluded by List Detective",
+                        Subscriber = new Subscriber {EmailAddress = "email@address.com"}
+                    }
+                }
+            };
+
+            var ex = Assert.Throws<SubscriberExcludedException>(() => ExactTargetResultChecker.CheckResult(result));
+
+            Assert.AreEqual("email@address.com", ex.EmailAddress);
+            Assert.AreEqual("Subcriber was excluded. EmailAddress: email@address.com Additional Info: ExactTarget response indicates failure. StatusCode:Error StatusMessage:Reason for failing SubscriberFailures: ErrorCode:123 ErrorDescription:Some other failure| ErrorCode:24 ErrorDescription:Subscriber was excluded by List Detective",
+                ex.Message);
+        }
+
+        [Test]
         public void CheckResultThrowsExceptionWithSubscriberExcludedErrorAndSubscriberInfoIsNotSupplied()
         {
             var result = new TriggeredSendCreateResult
