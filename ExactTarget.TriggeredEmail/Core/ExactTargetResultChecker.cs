@@ -35,9 +35,10 @@ namespace ExactTarget.TriggeredEmail.Core
              * See https://help.exacttarget.com/en/documentation/exacttarget/content/email_messages/email_send_error_codes/
              */
             const int listDetectiveExclusionErrorCode = 24;
-            if (subscriberFailures.Length == 1 && subscriberFailures[0].ErrorCode == listDetectiveExclusionErrorCode.ToString())
+            var lastFailure = subscriberFailures.LastOrDefault();
+            if (lastFailure != null && lastFailure.ErrorCode == listDetectiveExclusionErrorCode.ToString())
             {
-                var subscriberEmailAddress = subscriberFailures[0].Subscriber == null ? null : subscriberFailures[0].Subscriber.EmailAddress;
+                var subscriberEmailAddress = lastFailure.Subscriber == null ? null : lastFailure.Subscriber.EmailAddress;
                 throw new SubscriberExcludedException(subscriberEmailAddress, exceptionMessage);
             }
             
