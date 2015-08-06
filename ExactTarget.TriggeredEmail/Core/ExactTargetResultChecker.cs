@@ -36,7 +36,8 @@ namespace ExactTarget.TriggeredEmail.Core
              */
             const int listDetectiveExclusionErrorCode = 24;
             var lastFailure = subscriberFailures.LastOrDefault();
-            if (lastFailure != null && lastFailure.ErrorCode == listDetectiveExclusionErrorCode.ToString())
+            if (lastFailure != null && 
+                (lastFailure.ErrorCode == listDetectiveExclusionErrorCode.ToString() || lastFailure.ErrorDescription.StartsWith("Error Code: " + listDetectiveExclusionErrorCode)))
             {
                 var subscriberEmailAddress = lastFailure.Subscriber == null ? null : lastFailure.Subscriber.EmailAddress;
                 throw new SubscriberExcludedException(subscriberEmailAddress, exceptionMessage);

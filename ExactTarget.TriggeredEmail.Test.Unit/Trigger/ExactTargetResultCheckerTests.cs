@@ -20,10 +20,10 @@ namespace ExactTarget.TriggeredEmail.Test.Unit.Trigger
         [Test]
         public void CheckResultDoesNotThrowExceptionIfResultStatusCodeIsOk()
         {
-            var result = new Result{StatusCode = "OK"};
+            var result = new Result {StatusCode = "OK"};
             Assert.DoesNotThrow(() => ExactTargetResultChecker.CheckResult(result));
 
-            result = new Result { StatusCode = "ok" };
+            result = new Result {StatusCode = "ok"};
             Assert.DoesNotThrow(() => ExactTargetResultChecker.CheckResult(result));
         }
 
@@ -46,7 +46,7 @@ namespace ExactTarget.TriggeredEmail.Test.Unit.Trigger
                 StatusMessage = "Reason for failing",
                 SubscriberFailures = new[]
                 {
-                    new SubscriberResult { ErrorCode = "00", ErrorDescription = "Generic subscriber failure" }
+                    new SubscriberResult {ErrorCode = "00", ErrorDescription = "Generic subscriber failure"}
                 }
             };
 
@@ -65,11 +65,12 @@ namespace ExactTarget.TriggeredEmail.Test.Unit.Trigger
             {
                 StatusCode = "Error",
                 StatusMessage = "Reason for failing",
-                SubscriberFailures = new []
+                SubscriberFailures = new[]
                 {
                     new SubscriberResult
                     {
-                        ErrorCode = "24", ErrorDescription = "Subscriber was excluded by List Detective",
+                        ErrorCode = "24",
+                        ErrorDescription = "Subscriber was excluded by List Detective",
                         Subscriber = new Subscriber {EmailAddress = "email@address.com"}
                     }
                 }
@@ -78,7 +79,9 @@ namespace ExactTarget.TriggeredEmail.Test.Unit.Trigger
             var ex = Assert.Throws<SubscriberExcludedException>(() => ExactTargetResultChecker.CheckResult(result));
 
             Assert.AreEqual("email@address.com", ex.EmailAddress);
-            Assert.AreEqual("Subcriber was excluded. EmailAddress: email@address.com Additional Info: ExactTarget response indicates failure. StatusCode:Error StatusMessage:Reason for failing SubscriberFailures: ErrorCode:24 ErrorDescription:Subscriber was excluded by List Detective", ex.Message);
+            Assert.AreEqual(
+                "Subcriber was excluded. EmailAddress: email@address.com Additional Info: ExactTarget response indicates failure. StatusCode:Error StatusMessage:Reason for failing SubscriberFailures: ErrorCode:24 ErrorDescription:Subscriber was excluded by List Detective",
+                ex.Message);
         }
 
         [Test]
@@ -92,11 +95,13 @@ namespace ExactTarget.TriggeredEmail.Test.Unit.Trigger
                 {
                     new SubscriberResult
                     {
-                        ErrorCode = "123", ErrorDescription = "Some other failure"
+                        ErrorCode = "123",
+                        ErrorDescription = "Some other failure"
                     },
                     new SubscriberResult
                     {
-                        ErrorCode = "24", ErrorDescription = "Subscriber was excluded by List Detective",
+                        ErrorCode = "24",
+                        ErrorDescription = "Subscriber was excluded by List Detective",
                         Subscriber = new Subscriber {EmailAddress = "email@address.com"}
                     }
                 }
@@ -105,7 +110,8 @@ namespace ExactTarget.TriggeredEmail.Test.Unit.Trigger
             var ex = Assert.Throws<SubscriberExcludedException>(() => ExactTargetResultChecker.CheckResult(result));
 
             Assert.AreEqual("email@address.com", ex.EmailAddress);
-            Assert.AreEqual("Subcriber was excluded. EmailAddress: email@address.com Additional Info: ExactTarget response indicates failure. StatusCode:Error StatusMessage:Reason for failing SubscriberFailures: ErrorCode:123 ErrorDescription:Some other failure| ErrorCode:24 ErrorDescription:Subscriber was excluded by List Detective",
+            Assert.AreEqual(
+                "Subcriber was excluded. EmailAddress: email@address.com Additional Info: ExactTarget response indicates failure. StatusCode:Error StatusMessage:Reason for failing SubscriberFailures: ErrorCode:123 ErrorDescription:Some other failure| ErrorCode:24 ErrorDescription:Subscriber was excluded by List Detective",
                 ex.Message);
         }
 
@@ -118,14 +124,47 @@ namespace ExactTarget.TriggeredEmail.Test.Unit.Trigger
                 StatusMessage = "Reason for failing",
                 SubscriberFailures = new[]
                 {
-                    new SubscriberResult { ErrorCode = "24", ErrorDescription = "Subscriber was excluded by List Detective" }
+                    new SubscriberResult
+                    {
+                        ErrorCode = "24",
+                        ErrorDescription = "Subscriber was excluded by List Detective"
+                    }
                 }
             };
 
             var ex = Assert.Throws<SubscriberExcludedException>(() => ExactTargetResultChecker.CheckResult(result));
 
             Assert.IsNull(ex.EmailAddress);
-            Assert.AreEqual("Subcriber was excluded. EmailAddress:  Additional Info: ExactTarget response indicates failure. StatusCode:Error StatusMessage:Reason for failing SubscriberFailures: ErrorCode:24 ErrorDescription:Subscriber was excluded by List Detective", ex.Message);
+            Assert.AreEqual(
+                "Subcriber was excluded. EmailAddress:  Additional Info: ExactTarget response indicates failure. StatusCode:Error StatusMessage:Reason for failing SubscriberFailures: ErrorCode:24 ErrorDescription:Subscriber was excluded by List Detective",
+                ex.Message);
+        }
+
+        [Test]
+        public void CheckResultThrowsExceptionWithSubscriberExcludedError_When_The_Error_Code_Is_In_The_ErrorDescription
+            ()
+        {
+            var result = new TriggeredSendCreateResult
+            {
+                StatusCode = "Error",
+                StatusMessage = "Reason for failing",
+                SubscriberFailures = new[]
+                {
+                    new SubscriberResult
+                    {
+                        ErrorCode = "TriggeredSendSubscriberProcessingError",
+                        ErrorDescription = "Error Code: 24 - Subscriber was excluded by List Detective.",
+                        Subscriber = new Subscriber {EmailAddress = "email@address.com"}
+                    }
+                }
+            };
+
+            var ex = Assert.Throws<SubscriberExcludedException>(() => ExactTargetResultChecker.CheckResult(result));
+
+            Assert.AreEqual("email@address.com", ex.EmailAddress);
+            Assert.AreEqual(
+                "Subcriber was excluded. EmailAddress: email@address.com Additional Info: ExactTarget response indicates failure. StatusCode:Error StatusMessage:Reason for failing SubscriberFailures: ErrorCode:TriggeredSendSubscriberProcessingError ErrorDescription:Error Code: 24 - Subscriber was excluded by List Detective.",
+                ex.Message);
         }
     }
 }

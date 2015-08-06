@@ -49,7 +49,7 @@
     <Compile Include="Creation\Creators\TemplatedEmailCreatorTests.cs" />
     <Compile Include="Creation\Creators\LayoutHtmlReplacementFieldNameParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Trigger\EmailTriggerTests.cs" />
+    <Compile Include="Trigger\ExactTargetResultCheckerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ExactTarget.TriggeredEmail\ExactTarget.TriggeredEmail.csproj">
