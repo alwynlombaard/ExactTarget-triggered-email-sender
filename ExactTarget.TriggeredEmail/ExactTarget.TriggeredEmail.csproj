@@ -31,8 +31,9 @@
     <DocumentationFile>bin\Release\ExactTarget.TriggeredEmail.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExactTarget.EmailFromTemplateCreator">
-      <HintPath>packages\ExactTarget.EmailFromTemplate.1.0.1\lib\ExactTarget.EmailFromTemplateCreator.dll</HintPath>
+    <Reference Include="ExactTarget.EmailFromTemplateCreator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\ExactTarget.EmailFromTemplateCreator.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

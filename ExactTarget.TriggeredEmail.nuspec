@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>ExactTarget.TriggeredEmail</id>
+    <title>ExactTarget.TriggeredEmail</title>
+    <version>1.0.0.0</version>
+    <authors>JustGiving</authors>
+    <owners>JustGiving</owners>
+    <summary>ExactTarget.TriggeredEmail</summary>
+    <description>Simplifies creating and sending a triggered email in ExactTarget using the ExactTarget API.</description>
+    <projectUrl>https://github.com/JustGiving/ExactTarget-triggered-email-sender</projectUrl>
+    <tags>tags</tags>
+    <licenseUrl>https://github.com/JustGiving/ExactTarget-triggered-email-sender</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <releaseNotes>
+    </releaseNotes>
+    <copyright>JustGiving 2015</copyright>
+    <dependencies>
+      <group>
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="ExactTarget.*.dll" target="lib\net40" />
+    <file src="ExactTarget.*.pdb" target="lib\net40" />
+  </files>
+</package>

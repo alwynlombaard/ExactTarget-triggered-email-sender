@@ -12,7 +12,7 @@ namespace ExactTarget.TriggeredEmail.Test.Integration
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
-            TestRecipientEmail = "";
+            TestRecipientEmail = "james.hulse@justgiving.com";
 
             if (string.IsNullOrWhiteSpace(TestRecipientEmail))
             {
@@ -21,8 +21,8 @@ namespace ExactTarget.TriggeredEmail.Test.Integration
 
             Config = new ExactTargetConfiguration
             {
-                ApiUserName = "",
-                ApiPassword = "",
+                ApiUserName = "JG_API_User_Dev",
+                ApiPassword = "JG_4P1_D3V_2014!",
                 EndPoint = "https://webservice.s6.exacttarget.com/Service.asmx",//update your correct endpoint
                 ClientId = 6269489, // optional  business unit to use
             };
